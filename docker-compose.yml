@@ -1,0 +1,60 @@
+version: '3.8'
+networks:
+    simple-ecommerce:
+        driver: bridge
+        
+services:
+    postgres:
+        container_name: simple-ecommerce-db
+        image: postgres:10.14
+        ports:
+            - '5432:5432'
+        networks:
+            - simple-ecommerce
+        env_file:
+          - ./.env
+
+    simple-ecommerce.main:
+        container_name: simple-ecommerce-main
+        image: simple-ecommerce/simple-ecommerce-main
+        ports:
+          - '5000:443'
+        build:
+            context: .
+            dockerfile: SimpleEcommerce.Main/Dockerfile
+        networks:
+            - simple-ecommerce
+        env_file:
+          - ./.env
+        volumes:
+          - ./certificates/service.pfx:/certificates/service.pfx:ro
+
+    simple-ecommerce.health-checks:
+        container_name: simple-ecommerce-health-checks
+        image: simple-ecommerce/simple-ecommerce-health-checks
+        ports:
+          - "5001:443"
+        build:
+            context: .
+            dockerfile: SimpleEcommerce.HealthChecks/Dockerfile
+        networks:
+            - simple-ecommerce
+        env_file:
+          - ./.env
+        volumes:
+          - ./certificates/service.pfx:/certificates/service.pfx:ro
+  
+    simple-ecommerce.order:
+        container_name: simple-ecommerce-order
+        image: simple-ecommerce/simple-ecommerce-order
+        ports:
+          - "5002:443"
+        build:
+          context: .
+          dockerfile: SimpleEcommerce.Order/Dockerfile
+        networks:
+            - simple-ecommerce
+        env_file:
+          - ./.env
+        volumes:
+          - ./certificates/service.pfx:/certificates/service.pfx:ro

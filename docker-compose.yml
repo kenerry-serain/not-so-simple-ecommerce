@@ -21,7 +21,7 @@ services:
           - '5000:443'
         build:
             context: .
-            dockerfile: SimpleEcommerce.Main/Dockerfile
+            dockerfile: SimpleEcommerceV2.Main/Dockerfile
         networks:
             - simple-ecommerce
         env_file:
@@ -37,7 +37,7 @@ services:
           - "5001:443"
         build:
             context: .
-            dockerfile: SimpleEcommerce.HealthChecks/Dockerfile
+            dockerfile: SimpleEcommerceV2.HealthChecks/Dockerfile
         networks:
             - simple-ecommerce
         env_file:
@@ -53,7 +53,7 @@ services:
           - "5002:443"
         build:
           context: .
-          dockerfile: SimpleEcommerce.Order/Dockerfile
+          dockerfile: SimpleEcommerceV2.Order/Dockerfile
         networks:
             - simple-ecommerce
         env_file:

@@ -5,11 +5,9 @@ VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{BC3BE590-5519-4D12-BAD0-B3A507592AE0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEcommerceV2.HealthChecks", "SimpleEcommerce.HealthChecks\SimpleEcommerceV2.HealthChecks.csproj", "{BC8AAB0A-B4F5-47E2-A846-3109B97484C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEcommerceV2.HealthChecks", "SimpleEcommerceV2.HealthChecks\SimpleEcommerceV2.HealthChecks.csproj", "{BC8AAB0A-B4F5-47E2-A846-3109B97484C5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEcommerceV2.Order", "SimpleEcommerce.Order\SimpleEcommerceV2.Order.csproj", "{6E394F35-F212-4234-A7A8-382A25F03B05}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEcommerceV2.Main", "SimpleEcommerce.Main\SimpleEcommerceV2.Main.csproj", "{C8FA5665-8C28-4D55-ADF6-5DA21AA783B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEcommerceV2.Order", "SimpleEcommerceV2.Order\SimpleEcommerceV2.Order.csproj", "{6E394F35-F212-4234-A7A8-382A25F03B05}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEcommerceV2.Notificator", "SimpleEcommerceV2.Notificator\SimpleEcommerceV2.Notificator.csproj", "{2F8937A6-273A-4A70-B7BC-C1D9D839541F}"
 EndProject
@@ -19,8 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEcommerceV2.IdentityS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEcommerceV2.Notificator.Domain", "SimpleEcommerceV2.Notificator.Domain\SimpleEcommerceV2.Notificator.Domain.csproj", "{54C2930F-C50E-4BCD-845E-965102D13083}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEcommerceV2.Main.Domain", "SimpleEcommerceV2.Main\SimpleEcommerceV2.Main.Domain.csproj", "{BF807EE7-688E-47A6-AB3E-5FCAA3EC92AB}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00-Services", "00-Services", "{B06648B1-3AFC-4843-910D-D40FF8AE17F3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01-Domains", "01-Domains", "{1E815AEB-4B2D-4168-AA3D-3DEFBDE8EF7E}"
@@ -29,7 +25,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02-Infrastructure", "02-Inf
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEcommerceV2.Order.Domain", "SimpleEcommerceV2.Order.Domain\SimpleEcommerceV2.Order.Domain.csproj", "{E558FBA0-EDBA-4BAC-8C70-1533F91507E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleEcommerceV2.Repositories", "SimpleEcommerceV2.Repositories\SimpleEcommerceV2.Repositories.csproj", "{39151E10-8BB5-4E3E-8DA2-FBAC21908DC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEcommerceV2.Repositories", "SimpleEcommerceV2.Repositories\SimpleEcommerceV2.Repositories.csproj", "{39151E10-8BB5-4E3E-8DA2-FBAC21908DC1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleEcommerceV2.Main", "SimpleEcommerceV2.Main\SimpleEcommerceV2.Main.csproj", "{AFD58B84-0BE2-4151-845E-C91847EA6294}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEcommerceV2.Main.Domain", "SimpleEcommerceV2.Main.Domain\SimpleEcommerceV2.Main.Domain.csproj", "{2403757F-0DD6-4727-90FA-B7CA80964266}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,10 +49,6 @@ Global
 		{6E394F35-F212-4234-A7A8-382A25F03B05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E394F35-F212-4234-A7A8-382A25F03B05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E394F35-F212-4234-A7A8-382A25F03B05}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C8FA5665-8C28-4D55-ADF6-5DA21AA783B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C8FA5665-8C28-4D55-ADF6-5DA21AA783B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C8FA5665-8C28-4D55-ADF6-5DA21AA783B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C8FA5665-8C28-4D55-ADF6-5DA21AA783B1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2F8937A6-273A-4A70-B7BC-C1D9D839541F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2F8937A6-273A-4A70-B7BC-C1D9D839541F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F8937A6-273A-4A70-B7BC-C1D9D839541F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -69,10 +65,6 @@ Global
 		{54C2930F-C50E-4BCD-845E-965102D13083}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54C2930F-C50E-4BCD-845E-965102D13083}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54C2930F-C50E-4BCD-845E-965102D13083}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BF807EE7-688E-47A6-AB3E-5FCAA3EC92AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BF807EE7-688E-47A6-AB3E-5FCAA3EC92AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BF807EE7-688E-47A6-AB3E-5FCAA3EC92AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BF807EE7-688E-47A6-AB3E-5FCAA3EC92AB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E558FBA0-EDBA-4BAC-8C70-1533F91507E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E558FBA0-EDBA-4BAC-8C70-1533F91507E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E558FBA0-EDBA-4BAC-8C70-1533F91507E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -81,6 +73,14 @@ Global
 		{39151E10-8BB5-4E3E-8DA2-FBAC21908DC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39151E10-8BB5-4E3E-8DA2-FBAC21908DC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39151E10-8BB5-4E3E-8DA2-FBAC21908DC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFD58B84-0BE2-4151-845E-C91847EA6294}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFD58B84-0BE2-4151-845E-C91847EA6294}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFD58B84-0BE2-4151-845E-C91847EA6294}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFD58B84-0BE2-4151-845E-C91847EA6294}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2403757F-0DD6-4727-90FA-B7CA80964266}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2403757F-0DD6-4727-90FA-B7CA80964266}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2403757F-0DD6-4727-90FA-B7CA80964266}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2403757F-0DD6-4727-90FA-B7CA80964266}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,14 +88,14 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{BC8AAB0A-B4F5-47E2-A846-3109B97484C5} = {B06648B1-3AFC-4843-910D-D40FF8AE17F3}
 		{6E394F35-F212-4234-A7A8-382A25F03B05} = {B06648B1-3AFC-4843-910D-D40FF8AE17F3}
-		{C8FA5665-8C28-4D55-ADF6-5DA21AA783B1} = {B06648B1-3AFC-4843-910D-D40FF8AE17F3}
 		{2F8937A6-273A-4A70-B7BC-C1D9D839541F} = {B06648B1-3AFC-4843-910D-D40FF8AE17F3}
 		{29B0586C-4F30-4D66-969E-E701F24C79D1} = {1B34CEA0-2A94-4F86-A76E-88B997A00B23}
 		{F5807E2A-A71F-4060-A78D-B4BF1C41CAF2} = {B06648B1-3AFC-4843-910D-D40FF8AE17F3}
 		{54C2930F-C50E-4BCD-845E-965102D13083} = {1E815AEB-4B2D-4168-AA3D-3DEFBDE8EF7E}
-		{BF807EE7-688E-47A6-AB3E-5FCAA3EC92AB} = {1E815AEB-4B2D-4168-AA3D-3DEFBDE8EF7E}
 		{E558FBA0-EDBA-4BAC-8C70-1533F91507E0} = {1E815AEB-4B2D-4168-AA3D-3DEFBDE8EF7E}
 		{39151E10-8BB5-4E3E-8DA2-FBAC21908DC1} = {1B34CEA0-2A94-4F86-A76E-88B997A00B23}
+		{AFD58B84-0BE2-4151-845E-C91847EA6294} = {B06648B1-3AFC-4843-910D-D40FF8AE17F3}
+		{2403757F-0DD6-4727-90FA-B7CA80964266} = {1E815AEB-4B2D-4168-AA3D-3DEFBDE8EF7E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B7EC1997-9E54-4C56-B5D1-BF1134DEDC03}

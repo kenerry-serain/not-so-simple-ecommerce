@@ -1,42 +1,20 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using HealthChecks.UI.Client;
-using MediatR.Extensions.Autofac.DependencyInjection;
-using MediatR.Extensions.Autofac.DependencyInjection.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.EntityFrameworkCore;
-using SimpleEcommerce.Main.Middlewares;
-using SimpleEcommerce.Main.Repositories.Contexts;
-using SimpleEcommerce.Main.Repositories.Contracts;
-using SimpleEcommerce.Main.Repositories.Implementations;
+using SimpleEcommerceV2.Main.Middlewares;
+using SimpleEcommerceV2.Main.Modules;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(applicationBuilder =>
 {
-    applicationBuilder.Register(configuration =>
-    {
-        var options = new DbContextOptionsBuilder<ProductContext>();
-        options.UseNpgsql(builder.Configuration.GetConnectionString("Default"));
-        var dbContext = new ProductContext(options.Options);
+    applicationBuilder.RegisterModule<DomainModule>();
+    applicationBuilder.RegisterModule(new InfrastructureModule(builder.Configuration));
 
-        dbContext.Database.Migrate();
-        return dbContext;
-    })
-    .InstancePerLifetimeScope();
-
-    applicationBuilder.RegisterType<ErrorHandlerMiddleware>().SingleInstance();
-    applicationBuilder.RegisterType<ProductReadRepository>().As<IProductReadRepository>();
-    applicationBuilder.RegisterType<ProductWriteRepository>().As<IProductWriteRepository>();
-    applicationBuilder.RegisterType<StockWriteRepository>().As<IStockWriteRepository>();
-    applicationBuilder.RegisterType<StockReadRepository>().As<IStockReadRepository>();
-
-    var configuration = MediatRConfigurationBuilder
-          .Create(typeof(Program).Assembly)
-          .WithAllOpenGenericHandlerTypesRegistered()
-          .Build();
-
-    applicationBuilder.RegisterMediatR(configuration);
+    applicationBuilder
+        .RegisterType<GlobalErrorHandlerMiddleware>()
+        .SingleInstance();
 });
 builder.Services.AddHealthChecks();
 builder.Services.AddControllers();
@@ -50,7 +28,7 @@ app.Map("/main", applicationBuilder =>
     applicationBuilder.UseSwagger();
     applicationBuilder.UseSwaggerUI();
     applicationBuilder.UseRouting();
-    applicationBuilder.UseMiddleware<ErrorHandlerMiddleware>();
+    applicationBuilder.UseMiddleware<GlobalErrorHandlerMiddleware>();
 
     applicationBuilder.UseEndpoints(endpoints =>
     {

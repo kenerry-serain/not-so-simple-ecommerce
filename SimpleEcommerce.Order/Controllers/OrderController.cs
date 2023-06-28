@@ -2,10 +2,10 @@
 using MediatR;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using SimpleEcommerce.Order.InOut.Requests;
-using SimpleEcommerce.Order.Mappings;
+using SimpleEcommerceV2.Order.Domain.InOut.Requests;
+using SimpleEcommerceV2.Order.Domain.Mappings;
 
-namespace SimpleEcommerce.Order.Controllers;
+namespace SimpleEcommerceV2.Order.Controllers;
 
 [ApiController]
 [Route("api/shopping")]

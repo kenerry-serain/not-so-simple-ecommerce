@@ -2,12 +2,12 @@
 using MediatR;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using SimpleEcommerce.Main.InOut.Requests;
-using SimpleEcommerce.Main.Models;
-using SimpleEcommerce.Main.Repositories.Contracts;
-using SimpleEcommerce.Main.Mappings;
+using SimpleEcommerceV2.Main.Domain.InOut.Requests;
+using SimpleEcommerceV2.Main.Domain.Mappings;
+using SimpleEcommerceV2.Main.Domain.Models;
+using SimpleEcommerceV2.Main.Domain.Repositories.Contracts;
 
-namespace SimpleEcommerce.Main.Controllers
+namespace SimpleEcommerceV2.Main.Controllers
 {
     [Route("api/stock")]
     [ApiController]
@@ -25,9 +25,9 @@ namespace SimpleEcommerce.Main.Controllers
         [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken)
         {
-            var stocks = await _stockReadRepository.GetAllAsync();
+            var stocks = await _stockReadRepository.GetAllAsync(cancellationToken);
             var stocksAsArray = stocks as StockEntity[] ?? stocks.ToArray();
             if (!stocksAsArray.Any())
                 return NoContent();

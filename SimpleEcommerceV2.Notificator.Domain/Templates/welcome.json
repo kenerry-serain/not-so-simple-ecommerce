@@ -1,0 +1,8 @@
+{
+  "Template": {
+    "TemplateName": "Welcome",
+    "SubjectPart": "Welcome",
+    "TextPart": "Hi {{username}}, Welcome!",
+    "HtmlPart": "<h1>Hi {{username}}, Welcome!</h1>"
+  }
+}

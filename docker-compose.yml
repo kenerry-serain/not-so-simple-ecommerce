@@ -27,7 +27,8 @@ services:
         env_file:
           - ./.env
         volumes:
-          - ./certificates/service.pfx:/certificates/service.pfx:ro
+          - ${CERTIFICATES_HOST_PATH}:${CERTIFICATES_CONTAINER_PATH}:ro
+          - ${AWS_CREDENTIALS_HOST_PATH}:${AWS_CREDENTIALS_CONTAINER_PATH}:ro
 
     simple-ecommerce.health-checks:
         container_name: simple-ecommerce-health-checks
@@ -42,7 +43,8 @@ services:
         env_file:
           - ./.env
         volumes:
-          - ./certificates/service.pfx:/certificates/service.pfx:ro
+          - ${CERTIFICATES_HOST_PATH}:${CERTIFICATES_CONTAINER_PATH}:ro
+          - ${AWS_CREDENTIALS_HOST_PATH}:${AWS_CREDENTIALS_CONTAINER_PATH}:ro
   
     simple-ecommerce.order:
         container_name: simple-ecommerce-order
@@ -57,4 +59,21 @@ services:
         env_file:
           - ./.env
         volumes:
-          - ./certificates/service.pfx:/certificates/service.pfx:ro
+          - ${CERTIFICATES_HOST_PATH}:${CERTIFICATES_CONTAINER_PATH}:ro
+          - ${AWS_CREDENTIALS_HOST_PATH}:${AWS_CREDENTIALS_CONTAINER_PATH}:ro
+
+    simple-ecommerce.notificator:
+      container_name: simple-ecommerce-notificator
+      image: simple-ecommerce/simple-ecommerce-notificator
+      ports:
+        - "5003:443"
+      build:
+        context: .
+        dockerfile: SimpleEcommerceV2.Notificator/Dockerfile
+      networks:
+        - simple-ecommerce
+      env_file:
+        - ./.env
+      volumes:
+        - ${CERTIFICATES_HOST_PATH}:${CERTIFICATES_CONTAINER_PATH}:ro
+        - ${AWS_CREDENTIALS_HOST_PATH}:${AWS_CREDENTIALS_CONTAINER_PATH}:ro

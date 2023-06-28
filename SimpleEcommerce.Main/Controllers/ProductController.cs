@@ -2,33 +2,33 @@
 using MediatR;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using SimpleEcommerce.Main.Commands;
-using SimpleEcommerce.Main.InOut.Requests;
-using SimpleEcommerce.Main.Models;
-using SimpleEcommerce.Main.Repositories.Contracts;
-using SimpleEcommerce.Main.Mappings;
+using SimpleEcommerceV2.Main.Domain.Commands;
+using SimpleEcommerceV2.Main.Domain.InOut.Requests;
+using SimpleEcommerceV2.Main.Domain.Mappings;
+using SimpleEcommerceV2.Main.Domain.Models;
+using SimpleEcommerceV2.Repositories.Contracts;
 
-namespace SimpleEcommerce.Main.Controllers
+namespace SimpleEcommerceV2.Main.Controllers
 {
     [Route("api/product")]
     [ApiController]
     public sealed class ProductController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IProductReadRepository _productReadRepository;
+        private readonly IReadEntityRepository<ProductEntity> _readRepository;
 
-        public ProductController(IMediator mediator, IProductReadRepository productReadRepository)
+        public ProductController(IMediator mediator, IReadEntityRepository<ProductEntity> readRepository)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-            _productReadRepository = productReadRepository ?? throw new ArgumentNullException(nameof(productReadRepository));
+            _readRepository = readRepository ?? throw new ArgumentNullException(nameof(readRepository));
         }
 
         [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken)
         {
-            var products = await _productReadRepository.GetAllAsync();
+            var products = await _readRepository.GetAllAsync(cancellationToken);
             var productsAsArrays = products as ProductEntity[] ?? products.ToArray();
             if (!productsAsArrays.Any())
                 return NoContent();
@@ -39,9 +39,9 @@ namespace SimpleEcommerce.Main.Controllers
         [HttpGet("{id:int}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
+        public async Task<IActionResult> GetByIdAsync([FromRoute] int id, CancellationToken cancellationToken)
         {
-            var product = await _productReadRepository.GetByIdAsync(id);
+            var product = await _readRepository.GetByIdAsync(id, cancellationToken);
             if (product is null)
                 return NotFound();
 
@@ -61,7 +61,7 @@ namespace SimpleEcommerce.Main.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> UpdateAsync([FromRoute]int id, [FromBody] ProductRequest productRequest, CancellationToken cancellationToken)
         {
-            var product = await _productReadRepository.GetByIdAsync(id);
+            var product = await _readRepository.GetByIdAsync(id, cancellationToken);
             if (product is null)
                 return NotFound();
             
@@ -71,13 +71,13 @@ namespace SimpleEcommerce.Main.Controllers
         
         [HttpPut("{id:int}/stock")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> UpdateAsync([FromBody] StockRequest stock, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateAsync([FromRoute]int id, [FromBody] StockRequest stock, CancellationToken cancellationToken)
         {
-            var product = await _productReadRepository.GetByIdAsync(stock.ProductId);
+            var product = await _readRepository.GetByIdAsync(id, cancellationToken);
             if (product is null)
                 return NotFound();
             
-            var updatedStock = await _mediator.Send(stock.MapToUpdateProductStockCommand(), cancellationToken);
+            var updatedStock = await _mediator.Send(stock.MapToUpdateProductStockCommand(id), cancellationToken);
             return Ok(updatedStock);
         }
 
@@ -85,7 +85,7 @@ namespace SimpleEcommerce.Main.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> DeleteAsync([FromRoute] int id, CancellationToken cancellationToken)
         {
-            var product = await _productReadRepository.GetByIdAsync(id);
+            var product = await _readRepository.GetByIdAsync(id, cancellationToken);
             if (product is null)
                 return NotFound();
             

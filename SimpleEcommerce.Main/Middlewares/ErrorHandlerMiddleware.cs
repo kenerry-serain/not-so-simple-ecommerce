@@ -1,15 +1,15 @@
-﻿using Newtonsoft.Json;
+﻿using System.Net;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using System.Net;
 
-namespace SimpleEcommerce.Main.Middlewares
+namespace SimpleEcommerceV2.Main.Middlewares
 {
-    internal sealed class ErrorHandlerMiddleware : IMiddleware
+    internal sealed class GlobalErrorHandlerMiddleware : IMiddleware
     {
-        private readonly ILogger<ErrorHandlerMiddleware> _logger;
-        public ErrorHandlerMiddleware
+        private readonly ILogger<GlobalErrorHandlerMiddleware> _logger;
+        public GlobalErrorHandlerMiddleware
         (
-            ILogger<ErrorHandlerMiddleware> logger
+            ILogger<GlobalErrorHandlerMiddleware> logger
         )
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

@@ -24,11 +24,10 @@ namespace SimpleEcommerceV2.Main.Modules
                 var options = new DbContextOptionsBuilder<ProductContext>();
                 options.UseNpgsql(_configuration.GetConnectionString("Default"));
                 var dbContext = new ProductContext(options.Options);
-
                 dbContext.Database.Migrate();
                 return dbContext;
             })
-            .InstancePerLifetimeScope();
+            .SingleInstance();
 
             builder
             .RegisterGeneric(typeof(CreateEntityRepository<>))

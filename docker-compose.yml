@@ -4,7 +4,7 @@ networks:
         driver: bridge
         
 services:
-    postgres:
+    simple-ecommerce.db:
         container_name: simple-ecommerce-db
         image: postgres:10.14
         ports:
@@ -70,6 +70,22 @@ services:
       build:
         context: .
         dockerfile: SimpleEcommerceV2.Notificator/Dockerfile
+      networks:
+        - simple-ecommerce
+      env_file:
+        - ./.env
+      volumes:
+        - ${CERTIFICATES_HOST_PATH}:${CERTIFICATES_CONTAINER_PATH}:ro
+        - ${AWS_CREDENTIALS_HOST_PATH}:${AWS_CREDENTIALS_CONTAINER_PATH}:ro
+
+    simple-ecommerce.identity-server:
+      container_name: simple-ecommerce-identity-server
+      image: simple-ecommerce/simple-ecommerce-identity-server
+      ports:
+        - "5004:443"
+      build:
+        context: .
+        dockerfile: SimpleEcommerceV2.IdentityServer/Dockerfile
       networks:
         - simple-ecommerce
       env_file:

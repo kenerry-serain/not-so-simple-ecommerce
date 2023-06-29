@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using SimpleEcommerceV2.Main.Domain.InOut.Requests;
@@ -9,6 +10,7 @@ using SimpleEcommerceV2.Main.Domain.Repositories.Contracts;
 
 namespace SimpleEcommerceV2.Main.Controllers
 {
+    [Authorize]
     [Route("api/stock")]
     [ApiController]
     public sealed class StockController : ControllerBase

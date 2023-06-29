@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using SimpleEcommerceV2.Main.Domain.Commands;
@@ -10,8 +11,9 @@ using SimpleEcommerceV2.Repositories.Contracts;
 
 namespace SimpleEcommerceV2.Main.Controllers
 {
-    [Route("api/product")]
     [ApiController]
+    [Authorize]
+    [Route("api/product")]
     public sealed class ProductController : ControllerBase
     {
         private readonly IMediator _mediator;

@@ -25,10 +25,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\SimpleEcommerceV2.MessageHandler\SimpleEcommerceV2.MessageHandler.csproj" />
       <ProjectReference Include="..\SimpleEcommerceV2.Notificator.Domain\SimpleEcommerceV2.Notificator.Domain.csproj" />
     </ItemGroup>

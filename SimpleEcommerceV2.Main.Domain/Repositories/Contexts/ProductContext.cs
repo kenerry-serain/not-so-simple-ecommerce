@@ -8,7 +8,7 @@ namespace SimpleEcommerceV2.Main.Domain.Repositories.Contexts
         public ProductContext(DbContextOptions<ProductContext> options)
         : base(options) { }
 
-        internal DbSet<ProductEntity> Product { get; set; }
-        internal DbSet<StockEntity> Stock{ get; set; }
+        public DbSet<ProductEntity> Product { get; set; }
+        public DbSet<StockEntity> Stock{ get; set; }
     }
 }

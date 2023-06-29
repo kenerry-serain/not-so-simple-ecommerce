@@ -10,7 +10,7 @@ docker-compose up
 ``` 
 # Adding migrations
 ``` 
-dotnet ef migrations add InitialCreate --verbose
+dotnet ef migrations add InitialCreate --project ..\SimpleEcommerceV2.IdentityServer.Domain\ --verbose
 ```
 
 # Running migrations manually

@@ -13,6 +13,11 @@ namespace SimpleEcommerceV2.Repositories.Implementations
             DbSet = databaseContext.Set<TEntity>();
         }
 
+        public IQueryable<TEntity> GetAll()
+        {
+            return DbSet.AsQueryable();
+        }
+
         public async Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken)
         {
             var entities = await DbSet.ToListAsync(cancellationToken);

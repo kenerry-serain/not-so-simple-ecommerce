@@ -27,9 +27,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEcommerceV2.Order.Dom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEcommerceV2.Repositories", "SimpleEcommerceV2.Repositories\SimpleEcommerceV2.Repositories.csproj", "{39151E10-8BB5-4E3E-8DA2-FBAC21908DC1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleEcommerceV2.Main", "SimpleEcommerceV2.Main\SimpleEcommerceV2.Main.csproj", "{AFD58B84-0BE2-4151-845E-C91847EA6294}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEcommerceV2.Main", "SimpleEcommerceV2.Main\SimpleEcommerceV2.Main.csproj", "{AFD58B84-0BE2-4151-845E-C91847EA6294}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEcommerceV2.Main.Domain", "SimpleEcommerceV2.Main.Domain\SimpleEcommerceV2.Main.Domain.csproj", "{2403757F-0DD6-4727-90FA-B7CA80964266}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleEcommerceV2.IdentityServer.Domain", "SimpleEcommerceV2.IdentityServer.Domain\SimpleEcommerceV2.IdentityServer.Domain.csproj", "{9E99A10F-0F94-4366-BA6B-3A71AC022D01}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +83,10 @@ Global
 		{2403757F-0DD6-4727-90FA-B7CA80964266}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2403757F-0DD6-4727-90FA-B7CA80964266}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2403757F-0DD6-4727-90FA-B7CA80964266}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E99A10F-0F94-4366-BA6B-3A71AC022D01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E99A10F-0F94-4366-BA6B-3A71AC022D01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E99A10F-0F94-4366-BA6B-3A71AC022D01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E99A10F-0F94-4366-BA6B-3A71AC022D01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,6 +102,7 @@ Global
 		{39151E10-8BB5-4E3E-8DA2-FBAC21908DC1} = {1B34CEA0-2A94-4F86-A76E-88B997A00B23}
 		{AFD58B84-0BE2-4151-845E-C91847EA6294} = {B06648B1-3AFC-4843-910D-D40FF8AE17F3}
 		{2403757F-0DD6-4727-90FA-B7CA80964266} = {1E815AEB-4B2D-4168-AA3D-3DEFBDE8EF7E}
+		{9E99A10F-0F94-4366-BA6B-3A71AC022D01} = {1E815AEB-4B2D-4168-AA3D-3DEFBDE8EF7E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B7EC1997-9E54-4C56-B5D1-BF1134DEDC03}

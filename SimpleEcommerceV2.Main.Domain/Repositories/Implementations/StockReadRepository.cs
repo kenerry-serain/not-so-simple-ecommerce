@@ -15,10 +15,10 @@ public sealed class StockReadRepository: ReadEntityRepository<StockEntity>, ISto
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-    public async Task<StockEntity?> GetByProductIdAsync(int productId)
+    public async Task<StockEntity?> GetByProductIdAsync(int productId, CancellationToken cancellationToken)
     {
         return await _context.Stock
             .AsNoTracking()
-            .FirstOrDefaultAsync(stock => stock.ProductId == productId);
+            .FirstOrDefaultAsync(stock => stock.ProductId == productId, cancellationToken);
     }
 }

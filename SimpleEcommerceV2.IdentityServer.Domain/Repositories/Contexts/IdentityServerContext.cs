@@ -24,8 +24,8 @@ namespace SimpleEcommerceV2.IdentityServer.Domain.Repositories.Contexts
                 new UserEntity
                 {
                     Id = 1,
-                    Email = "admin@simple-ecommerce.com",
-                    Password =Encoding.UTF8.GetString(SHA256.HashData(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("Identity:User:Password"))))
+                    Email = _configuration.GetValue<string>("Identity:Admin:User"),
+                    Password =Encoding.UTF8.GetString(SHA256.HashData(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("Identity:Admin:User:Password"))))
                 }
             );
 

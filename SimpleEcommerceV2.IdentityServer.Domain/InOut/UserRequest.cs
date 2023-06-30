@@ -1,4 +1,4 @@
 ﻿namespace SimpleEcommerceV2.IdentityServer.Domain.InOut
 {
-    public record UserRequest(string Email, string Password) { }
+    public record AuthRequest(string Email, string Password, bool OnlyTokenBody=false) { }
 }

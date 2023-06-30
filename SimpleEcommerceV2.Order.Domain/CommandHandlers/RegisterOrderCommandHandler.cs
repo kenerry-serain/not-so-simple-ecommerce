@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Net.Http;
+using MediatR;
 using SimpleEcommerceV2.Order.Domain.Commands;
 using SimpleEcommerceV2.Order.Domain.Events;
 using SimpleEcommerceV2.Order.Domain.HttpHandlers.Contracts;
@@ -11,14 +12,14 @@ namespace SimpleEcommerceV2.Order.Domain.CommandHandlers;
 
 public sealed class RegisterOrderCommandHandler : IRequestHandler<RegisterOrderCommand, OrderResponse>
 {
-    private readonly ISimpleHttpClient _httpClient;
+    private readonly IMainApi _httpClient;
     private readonly IMediator _mediator;
     private readonly ICreateEntityRepository<OrderEntity> _createRepository;
 
     public RegisterOrderCommandHandler
     (
         ICreateEntityRepository<OrderEntity> repository, 
-        ISimpleHttpClient httpClient,
+        IMainApi httpClient,
         IMediator mediator
     )
     {
@@ -29,15 +30,22 @@ public sealed class RegisterOrderCommandHandler : IRequestHandler<RegisterOrderC
 
     public async Task<OrderResponse> Handle(RegisterOrderCommand request, CancellationToken cancellationToken)
     {
-        var orderEntity = request.MapToEntity();
-        var response = await _httpClient.UpdateAsync(request.ProductId, orderEntity);
-        if (!response.IsSuccessStatusCode)
-            throw new ArgumentException($"Your order was not completed, check if the product exists and if the " +
-                                        "stock is enough.");
+        var requestedOrderEntity = request.MapToEntity();
+        var stockApiResponse = await _httpClient.GetStockByProductIdAsync(request.ProductId);
+        if (!stockApiResponse.IsSuccessStatusCode)
+            throw new KeyNotFoundException("Sorry, something went wrong while consulting the product stock.");
 
-        orderEntity = await _createRepository.ExecuteAsync(orderEntity, cancellationToken);
-        
+        var stockResponse = stockApiResponse.Content;
+        if (stockResponse.Quantity < request.Quantity)
+            throw new KeyNotFoundException("There is not enought stock for the selected Product.");
+
+        requestedOrderEntity.Quantity = stockResponse.Quantity - request.Quantity;
+        var response = await _httpClient.UpdateAsync(request.ProductId, requestedOrderEntity);
+        if (!response.IsSuccessStatusCode)
+            throw new KeyNotFoundException("Sorry, something went wrong while updating the product stock.");
+
+        var createdOrderEntity = await _createRepository.ExecuteAsync(requestedOrderEntity, cancellationToken);
         await _mediator.Publish(new RegisteredOrderEvent(), cancellationToken);
-        return orderEntity.MapToResponse();
+        return createdOrderEntity.MapToResponse();
     }
 }

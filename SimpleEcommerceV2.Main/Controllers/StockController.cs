@@ -36,13 +36,5 @@ namespace SimpleEcommerceV2.Main.Controllers
 
             return Ok(stocksAsArray.MapToResponse());
         }
-
-        [HttpPost]
-        [ProducesResponseType((int)HttpStatusCode.Created)]
-        public async Task<IActionResult> AddAsync([FromBody] StockRequest stock, CancellationToken cancellationToken)
-        {
-            var createdStock = await _mediator.Send(stock.MapToRegisterProductStockCommand(), cancellationToken);
-            return Created(Request.GetDisplayUrl(), createdStock);
-        }
     }
 }

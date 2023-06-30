@@ -10,32 +10,30 @@ namespace SimpleEcommerceV2.Main.Domain.CommandHandlers
 {
     public sealed class UpdateProductStockCommandHandler : IRequestHandler<UpdateProductStockCommand, StockResponse>
     {
-        private readonly ICreateEntityRepository<StockEntity> _createEntityRepository;
+        private readonly IUpdateEntityRepository<StockEntity> _updateEntityRepository;
         private readonly IStockReadRepository _readRepository;
-
 
         public UpdateProductStockCommandHandler
         (
-            ICreateEntityRepository<StockEntity> createEntityRepository,
+            IUpdateEntityRepository<StockEntity> updateEntityRepository,
             IStockReadRepository readRepository
         )
         {
-            _createEntityRepository = createEntityRepository ?? throw new ArgumentNullException(nameof(createEntityRepository));
+            _updateEntityRepository = updateEntityRepository ?? throw new ArgumentNullException(nameof(updateEntityRepository));
             _readRepository = readRepository ?? throw new ArgumentNullException(nameof(readRepository));
-
         }
 
         public async Task<StockResponse> Handle(UpdateProductStockCommand request, CancellationToken cancellationToken)
         {
-            var oldStock = await _readRepository.GetByProductIdAsync(request.ProductId);
+            var oldStock = await _readRepository.GetByProductIdAsync(request.ProductId, cancellationToken);
             if (oldStock is null)
-                throw new KeyNotFoundException("The specified product doesn't exist.");
+                throw new KeyNotFoundException("The specified product doesn't have stock.");
 
             var newStock = request
                 .WithId(oldStock.Id)
-                .MapToEntity()
-                .ReduceQuantity(oldStock.Quantity);
-            await _createEntityRepository.ExecuteAsync(newStock, cancellationToken);
+                .MapToEntity();
+
+            await _updateEntityRepository.ExecuteAsync(newStock, cancellationToken);
             return newStock.MapToResponse();
         }
     }

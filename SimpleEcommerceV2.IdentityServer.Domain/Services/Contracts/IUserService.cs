@@ -4,6 +4,6 @@ namespace SimpleEcommerceV2.IdentityServer.Domain.Services.Contracts
 {
     public interface IUserService
     {
-        Task<bool> CheckPasswordAsync(UserRequest userRequest);
+        Task<bool> CheckPasswordAsync(AuthRequest userRequest);
     }
 }

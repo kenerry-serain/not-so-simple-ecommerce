@@ -16,7 +16,7 @@ namespace SimpleEcommerceV2.IdentityServer.Domain.Services.Implementations
             _readRepository = readRepository ?? throw new ArgumentNullException(nameof(readRepository));
         }
 
-        public async Task<bool> CheckPasswordAsync(UserRequest userRequest)
+        public async Task<bool> CheckPasswordAsync(AuthRequest userRequest)
         {
             var user = await _readRepository.GetAll()
                 .FirstOrDefaultAsync(user => user.Email == userRequest.Email);

@@ -5,11 +5,11 @@ namespace SimpleEcommerceV2.Main.Domain.Mappings
 {
     public static class RequestToCommandMapping
     {
-        public static RegisterProductStockCommand MapToRegisterProductStockCommand(this StockRequest stock)
+        public static RegisterProductStockCommand MapToRegisterProductStockCommand(this StockRequest stock, int productId)
         {
             return new RegisterProductStockCommand
             {
-                ProductId = stock.ProductId,
+                ProductId = productId,
                 Quantity = stock.Quantity
             };
         }

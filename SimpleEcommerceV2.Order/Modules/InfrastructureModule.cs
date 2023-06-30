@@ -1,8 +1,12 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
 using Autofac.Core;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using Refit;
 using SimpleEcommerceV2.Order.Domain.HttpHandlers.Contracts;
+using SimpleEcommerceV2.Order.Domain.InOut.Requests;
+using SimpleEcommerceV2.Order.Domain.InOut.Responses;
 using SimpleEcommerceV2.Order.Domain.Repositories.Contexts;
 using SimpleEcommerceV2.Repositories.Contracts;
 using SimpleEcommerceV2.Repositories.Implementations;
@@ -19,7 +23,7 @@ namespace SimpleEcommerceV2.Order.Modules
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.Register(configuration =>
+            builder.Register(_ =>
             {
                 var options = new DbContextOptionsBuilder<OrderContext>();
                 options.UseNpgsql(_configuration.GetConnectionString("Default"));
@@ -39,9 +43,28 @@ namespace SimpleEcommerceV2.Order.Modules
                       (i, c) => c.Resolve<OrderContext>())
               ).InstancePerLifetimeScope();
 
-            builder.Register(_ => RestService.For<ISimpleHttpClient>(
-                _configuration.GetValue<string>("BaseAddress:Product"))
-            );
+            var identityServerApi = RestService.For<IIdentityServerApi>(_configuration.GetValue<string>("BaseAddress:Identity"));
+            builder.Register(_ =>
+            {
+                return identityServerApi;
+            });
+
+            builder.Register( _ =>
+            {
+                var userRequest = new AuthRequest
+                (
+                    _configuration.GetValue<string>("Identity:Admin:User"),
+                    _configuration.GetValue<string>("Identity:Admin:User:Password")
+                );
+
+                return RestService.For<IMainApi>(_configuration.GetValue<string>("BaseAddress:Main"),
+                    new RefitSettings
+                    {
+                        AuthorizationHeaderValueGetter = ()=>
+                            identityServerApi.AuthAsync(userRequest)
+                    });
+
+            }).InstancePerDependency();
         }
     }
 }

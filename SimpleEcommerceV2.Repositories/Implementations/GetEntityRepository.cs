@@ -10,6 +10,7 @@ namespace SimpleEcommerceV2.Repositories.Implementations
 
         public ReadEntityRepository(DbContext databaseContext)
         {
+            databaseContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
             DbSet = databaseContext.Set<TEntity>();
         }
 

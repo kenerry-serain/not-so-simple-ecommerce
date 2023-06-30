@@ -3,6 +3,7 @@ using SimpleEcommerceV2.Main.Domain.Commands;
 using SimpleEcommerceV2.Main.Domain.InOut.Responses;
 using SimpleEcommerceV2.Main.Domain.Mappings;
 using SimpleEcommerceV2.Main.Domain.Models;
+using SimpleEcommerceV2.Main.Domain.Repositories.Contracts;
 using SimpleEcommerceV2.Repositories.Contracts;
 
 namespace SimpleEcommerceV2.Main.Domain.CommandHandlers
@@ -10,21 +11,21 @@ namespace SimpleEcommerceV2.Main.Domain.CommandHandlers
     public sealed class RegisterProductStockCommandHandler : IRequestHandler<RegisterProductStockCommand, StockResponse>
     {
         private readonly ICreateEntityRepository<StockEntity> _createEntityRepository;
-        private readonly IReadEntityRepository<ProductEntity> _productReadRepository;
+        private readonly IStockReadRepository _stockReadRepository;
 
         public RegisterProductStockCommandHandler
         (
             ICreateEntityRepository<StockEntity> createEntityRepository,
-            IReadEntityRepository<ProductEntity> productGetRepository
+            IStockReadRepository stockReadRepository
         )
         {
-            _productReadRepository = productGetRepository ?? throw new ArgumentNullException(nameof(productGetRepository));
             _createEntityRepository = createEntityRepository ?? throw new ArgumentNullException(nameof(createEntityRepository));
+            _stockReadRepository = stockReadRepository ?? throw new ArgumentNullException(nameof(stockReadRepository));
         }
 
         public async Task<StockResponse> Handle(RegisterProductStockCommand request, CancellationToken cancellationToken)
         {
-            var oldStock = await _productReadRepository.GetByIdAsync(request.ProductId, cancellationToken);
+            var oldStock = await _stockReadRepository.GetByProductIdAsync(request.ProductId, cancellationToken);
             if (oldStock is not null)
                 throw new ArgumentException("The specified product already has a stock registered, please use" +
                                                "the UPDATE method.");

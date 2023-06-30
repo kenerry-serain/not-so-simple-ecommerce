@@ -7,6 +7,7 @@ using SimpleEcommerceV2.Main.Domain.Commands;
 using SimpleEcommerceV2.Main.Domain.InOut.Requests;
 using SimpleEcommerceV2.Main.Domain.Mappings;
 using SimpleEcommerceV2.Main.Domain.Models;
+using SimpleEcommerceV2.Main.Domain.Repositories.Contracts;
 using SimpleEcommerceV2.Repositories.Contracts;
 
 namespace SimpleEcommerceV2.Main.Controllers
@@ -18,11 +19,17 @@ namespace SimpleEcommerceV2.Main.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IReadEntityRepository<ProductEntity> _readRepository;
-
-        public ProductController(IMediator mediator, IReadEntityRepository<ProductEntity> readRepository)
+        private readonly IStockReadRepository _stockReadRepository;
+        public ProductController
+        (
+            IMediator mediator, 
+            IReadEntityRepository<ProductEntity> readRepository,
+            IStockReadRepository stockReadRepository
+        )
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _readRepository = readRepository ?? throw new ArgumentNullException(nameof(readRepository));
+            _stockReadRepository = stockReadRepository ?? throw new ArgumentNullException(nameof(stockReadRepository));
         }
 
         [HttpGet]
@@ -50,6 +57,19 @@ namespace SimpleEcommerceV2.Main.Controllers
             return Ok(product.MapToResponse());
         }
 
+
+        [HttpGet("{id:int}/stock")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> GetStockByProductIdAsync([FromRoute] int id, CancellationToken cancellationToken)
+        {
+            var stock = await _stockReadRepository.GetByProductIdAsync(id, cancellationToken);
+            if (stock is null)
+                return NotFound();
+
+            return Ok(stock.MapToResponse());
+        }
+
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Created)]
@@ -57,6 +77,14 @@ namespace SimpleEcommerceV2.Main.Controllers
         {
             var createdProduct = await _mediator.Send(productRequest.MapToRegisterCommand(), cancellationToken);
             return Created(Request.GetDisplayUrl(),createdProduct);
+        }
+
+        [HttpPost("{id:int}/stock")]
+        [ProducesResponseType((int)HttpStatusCode.Created)]
+        public async Task<IActionResult> AddAsync([FromRoute] int id, [FromBody] StockRequest stock, CancellationToken cancellationToken)
+        {
+            var createdStock = await _mediator.Send(stock.MapToRegisterProductStockCommand(id), cancellationToken);
+            return Created(Request.GetDisplayUrl(), createdStock);
         }
 
         [HttpPut("{id:int}")]

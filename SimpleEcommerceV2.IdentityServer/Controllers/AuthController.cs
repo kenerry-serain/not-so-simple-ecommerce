@@ -17,10 +17,10 @@ namespace SimpleEcommerceV2.IdentityServer.Controllers
         (
             [FromServices] IConfiguration configuration,
             [FromServices] IUserService userService,
-            [FromBody] UserRequest request
+            [FromBody] AuthRequest authRequest
         )
         {
-            var isAuthenticated = await userService.CheckPasswordAsync(request);
+            var isAuthenticated = await userService.CheckPasswordAsync(authRequest);
             if (!isAuthenticated)
                 return Unauthorized();
 
@@ -28,7 +28,7 @@ namespace SimpleEcommerceV2.IdentityServer.Controllers
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetValue<string>("Identity:Key")));
             var claims = new List<Claim> 
             {
-                new Claim(JwtRegisteredClaimNames.Email, request.Email)
+                new Claim(JwtRegisteredClaimNames.Email, authRequest.Email)
             };
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -42,11 +42,15 @@ namespace SimpleEcommerceV2.IdentityServer.Controllers
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var jwt = tokenHandler.WriteToken(token);
-            return Ok(new
-            {
-                token = jwt,
-                expiration = token.ValidTo
-            });
+
+            if (!authRequest.OnlyTokenBody)
+                return Ok(new
+                {
+                    token = jwt,
+                    expiration = token.ValidTo
+                });
+
+            return Ok(jwt);
         }
     }
 }

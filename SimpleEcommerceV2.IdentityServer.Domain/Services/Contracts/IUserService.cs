@@ -1,4 +1,4 @@
-﻿using SimpleEcommerceV2.IdentityServer.Domain.InOut;
+﻿using SimpleEcommerceV2.Shared.InOut.Requests;
 
 namespace SimpleEcommerceV2.IdentityServer.Domain.Services.Contracts
 {

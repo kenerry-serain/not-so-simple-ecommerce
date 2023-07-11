@@ -2,8 +2,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using SimpleEcommerceV2.Order.Domain.InOut.Requests;
 using SimpleEcommerceV2.Order.Domain.Mappings;
+using SimpleEcommerceV2.Shared.InOut.Requests;
 
 namespace SimpleEcommerceV2.Order.Controllers;
 

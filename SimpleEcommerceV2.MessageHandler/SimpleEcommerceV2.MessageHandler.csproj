@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="Autofac" Version="7.0.1" />
+      <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.101.85" />
       <PackageReference Include="AWSSDK.SQS" Version="3.7.103.5" />
       <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="7.0.0" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />

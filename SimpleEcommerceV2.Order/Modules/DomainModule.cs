@@ -10,7 +10,7 @@ namespace SimpleEcommerceV2.Order.Modules
         protected override void Load(ContainerBuilder builder)
         {
             var configuration = MediatRConfigurationBuilder
-                       .Create(typeof(RegisterOrderCommand).Assembly)
+                       .Create(typeof(CreateOrderCommand).Assembly)
                        .WithAllOpenGenericHandlerTypesRegistered()
                        .Build();
 

@@ -1,5 +1,5 @@
-﻿using SimpleEcommerceV2.Order.Domain.InOut.Responses;
-using SimpleEcommerceV2.Order.Domain.Models;
+﻿using SimpleEcommerceV2.Order.Domain.Models;
+using SimpleEcommerceV2.Shared.InOut.Responses;
 
 namespace SimpleEcommerceV2.Order.Domain.Mappings
 {

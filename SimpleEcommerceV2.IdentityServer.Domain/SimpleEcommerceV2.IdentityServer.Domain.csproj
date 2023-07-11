@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SimpleEcommerceV2.Repositories\SimpleEcommerceV2.Repositories.csproj" />
+    <ProjectReference Include="..\SimpleEcommerceV2.Shared\SimpleEcommerceV2.Shared.csproj" />
   </ItemGroup>
 
 </Project>

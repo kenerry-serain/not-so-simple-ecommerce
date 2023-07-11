@@ -11,7 +11,7 @@ using SimpleEcommerceV2.MessageHandler.Utils;
 
 namespace SimpleEcommerceV2.MessageHandler.Implementations
 {
-    public class AwsSqsMessageSender : IMessageSender
+    public sealed class AwsSqsMessageSender : IMessageSender
     {
         private readonly IAmazonSQS _sqsClient;
         private readonly ILogger<AwsSqsMessageSender> _logger;
@@ -34,7 +34,8 @@ namespace SimpleEcommerceV2.MessageHandler.Implementations
 
         public async Task<string> EnqueueAsync<TObject>
         (
-            TObject messageBody
+            TObject messageBody,
+            CancellationToken cancellationToken
         )
         {
             var queueUrl = await GetQueueUrlAsync(_sqsClient);
@@ -57,7 +58,7 @@ namespace SimpleEcommerceV2.MessageHandler.Implementations
             var messageMd5 = Hasher.GetMd5(Encoding.UTF8.GetBytes(serializedMessageBody));
             var responseMd5 = response.MD5OfMessageBody;
             if (messageMd5 != responseMd5)
-                throw new AwsSqsMessageSenderException("The message is corrupted");
+                throw new AwsSqsMessageSenderException("The message is corrupted.");
 
             _logger.LogInformation($"Message sent {response.MessageId} to Queue {_senderParams.QueueName}");
 

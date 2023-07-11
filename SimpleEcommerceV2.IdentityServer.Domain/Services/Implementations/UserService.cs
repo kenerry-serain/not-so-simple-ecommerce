@@ -1,10 +1,10 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
-using SimpleEcommerceV2.IdentityServer.Domain.InOut;
 using SimpleEcommerceV2.IdentityServer.Domain.Models;
 using SimpleEcommerceV2.IdentityServer.Domain.Services.Contracts;
 using SimpleEcommerceV2.Repositories.Contracts;
+using SimpleEcommerceV2.Shared.InOut.Requests;
 
 namespace SimpleEcommerceV2.IdentityServer.Domain.Services.Implementations
 {

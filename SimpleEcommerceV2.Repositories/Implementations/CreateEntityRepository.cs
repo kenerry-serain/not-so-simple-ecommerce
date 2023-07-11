@@ -6,19 +6,19 @@ namespace SimpleEcommerceV2.Repositories.Implementations
     public class CreateEntityRepository<TEntity> : ICreateEntityRepository<TEntity>
         where TEntity : class
     {
-        private readonly DbSet<TEntity> DbSet;
-        private readonly DbContext DatabaseContext;
+        private readonly DbSet<TEntity> _dbSet;
+        private readonly DbContext _databaseContext;
 
         public CreateEntityRepository(DbContext databaseContext)
         {
-            DbSet = databaseContext.Set<TEntity>();
-            DatabaseContext = databaseContext;
+            _dbSet = databaseContext.Set<TEntity>();
+            _databaseContext = databaseContext;
         }
 
         public async Task<TEntity> ExecuteAsync(TEntity entity, CancellationToken cancellationToken)
         {
-            await DbSet.AddAsync(entity, cancellationToken);
-            await DatabaseContext.SaveChangesAsync(cancellationToken);
+            await _dbSet.AddAsync(entity, cancellationToken);
+            await _databaseContext.SaveChangesAsync(cancellationToken);
             return entity;
         }
     }

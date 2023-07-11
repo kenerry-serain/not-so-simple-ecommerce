@@ -21,9 +21,9 @@ builder.Host.ConfigureContainer<ContainerBuilder>(applicationBuilder =>
         .SingleInstance();
 });
 
-builder.Services.Configure<AwsSqsMessageParams>(
-    "AwsSqsMessageSenderParams01",
-     builder.Configuration.GetSection("Order:AwsSqsMessageSenderParams01")
+builder.Services.Configure<AwsSqsQueueMonitorParams>(
+    "AwsSqsQueueMonitorParams01",
+    builder.Configuration.GetSection("Main:AwsSqsQueueMonitorParams01")
 );
 builder.Services.AddMemoryCache();
 builder.Services.AddHealthChecks();
@@ -51,7 +51,7 @@ builder.Services.AddSwaggerGen(options =>
                     Id = "Bearer"
                 }
             },
-        Array.Empty<string>()
+            Array.Empty<string>()
         }
     });
 });
@@ -63,11 +63,12 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
+    var passwordBytes = Encoding.UTF8.GetBytes(builder.Configuration["Identity:Key"]!);
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidIssuer = builder.Configuration.GetValue<string>("Identity:Issuer"),
         ValidAudience = builder.Configuration.GetValue<string>("Identity:Audience"),
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("Identity:Key"))),
+        IssuerSigningKey = new SymmetricSecurityKey(passwordBytes),
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,

@@ -3,8 +3,8 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using SimpleEcommerceV2.IdentityServer.Domain.InOut;
 using SimpleEcommerceV2.IdentityServer.Domain.Services.Contracts;
+using SimpleEcommerceV2.Shared.InOut.Requests;
 
 namespace SimpleEcommerceV2.IdentityServer.Controllers
 {
@@ -25,7 +25,7 @@ namespace SimpleEcommerceV2.IdentityServer.Controllers
                 return Unauthorized();
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetValue<string>("Identity:Key")));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetValue<string>("Identity:Key")!));
             var claims = new List<Claim> 
             {
                 new Claim(JwtRegisteredClaimNames.Email, authRequest.Email)

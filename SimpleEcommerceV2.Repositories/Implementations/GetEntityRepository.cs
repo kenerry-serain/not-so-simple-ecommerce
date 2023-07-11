@@ -6,28 +6,28 @@ namespace SimpleEcommerceV2.Repositories.Implementations
     public class ReadEntityRepository<TEntity> : IReadEntityRepository<TEntity>
         where TEntity : class
     {
-        private readonly DbSet<TEntity> DbSet;
+        private readonly DbSet<TEntity> _dbSet;
 
         public ReadEntityRepository(DbContext databaseContext)
         {
             databaseContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-            DbSet = databaseContext.Set<TEntity>();
+            _dbSet = databaseContext.Set<TEntity>();
         }
 
         public IQueryable<TEntity> GetAll()
         {
-            return DbSet.AsQueryable();
+            return _dbSet.AsQueryable();
         }
 
         public async Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken)
         {
-            var entities = await DbSet.ToListAsync(cancellationToken);
+            var entities = await _dbSet.ToListAsync(cancellationToken);
             return entities;
         }
 
         public async Task<TEntity?> GetByIdAsync(int primaryKey, CancellationToken cancellationToken)
         {
-            var entity = await DbSet.FindAsync(primaryKey, cancellationToken);
+            var entity = await _dbSet.FindAsync(primaryKey, cancellationToken);
             return entity;
         }
     }

@@ -18,14 +18,22 @@ namespace SimpleEcommerceV2.IdentityServer.Domain.Repositories.Contexts
 
         public DbSet<UserEntity> User { get; set; }
 
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            var saveChangesResult =  base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+            ChangeTracker.Clear();
+            return saveChangesResult;
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            var hashedPassword = SHA256.HashData(
+                Encoding.UTF8.GetBytes(_configuration.GetValue<string>("Identity:Admin:User:Password")));
             modelBuilder.Entity<UserEntity>().HasData(
                 new UserEntity
                 {
                     Id = 1,
-                    Email = _configuration.GetValue<string>("Identity:Admin:User"),
-                    Password =Encoding.UTF8.GetString(SHA256.HashData(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("Identity:Admin:User:Password"))))
+                    Email = _configuration.GetValue<string>("Identity:Admin:User")!,
+                    Password =Encoding.UTF8.GetString(hashedPassword)
                 }
             );
 

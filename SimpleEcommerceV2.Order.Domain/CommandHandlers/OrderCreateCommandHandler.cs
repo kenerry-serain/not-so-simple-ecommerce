@@ -1,51 +1,45 @@
-﻿using System.Net.Http;
-using MediatR;
+﻿using MediatR;
 using SimpleEcommerceV2.Order.Domain.Commands;
 using SimpleEcommerceV2.Order.Domain.Events;
-using SimpleEcommerceV2.Order.Domain.HttpHandlers.Contracts;
-using SimpleEcommerceV2.Order.Domain.InOut.Responses;
 using SimpleEcommerceV2.Order.Domain.Mappings;
 using SimpleEcommerceV2.Order.Domain.Models;
 using SimpleEcommerceV2.Repositories.Contracts;
+using SimpleEcommerceV2.Shared.HttpHandlers.Contracts;
+using SimpleEcommerceV2.Shared.InOut.Responses;
 
 namespace SimpleEcommerceV2.Order.Domain.CommandHandlers;
 
-public sealed class RegisterOrderCommandHandler : IRequestHandler<RegisterOrderCommand, OrderResponse>
+public sealed class OrderCreateCommandHandler : IRequestHandler<CreateOrderCommand, OrderResponse>
 {
-    private readonly IMainApi _httpClient;
+    private readonly IMainApi _mainApiClient;
     private readonly IMediator _mediator;
     private readonly ICreateEntityRepository<OrderEntity> _createRepository;
 
-    public RegisterOrderCommandHandler
+    public OrderCreateCommandHandler
     (
         ICreateEntityRepository<OrderEntity> repository, 
-        IMainApi httpClient,
+        IMainApi mainApiClient,
         IMediator mediator
     )
     {
         _createRepository = repository ?? throw new ArgumentNullException(nameof(repository));
-        _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        _mainApiClient = mainApiClient ?? throw new ArgumentNullException(nameof(mainApiClient));
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
-    public async Task<OrderResponse> Handle(RegisterOrderCommand request, CancellationToken cancellationToken)
+    public async Task<OrderResponse> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
         var requestedOrderEntity = request.MapToEntity();
-        var stockApiResponse = await _httpClient.GetStockByProductIdAsync(request.ProductId);
+        var stockApiResponse = await _mainApiClient.GetStockByProductIdAsync(request.ProductId);
         if (!stockApiResponse.IsSuccessStatusCode)
             throw new KeyNotFoundException("Sorry, something went wrong while consulting the product stock.");
 
         var stockResponse = stockApiResponse.Content;
         if (stockResponse.Quantity < request.Quantity)
-            throw new KeyNotFoundException("There is not enought stock for the selected Product.");
-
-        requestedOrderEntity.Quantity = stockResponse.Quantity - request.Quantity;
-        var response = await _httpClient.UpdateAsync(request.ProductId, requestedOrderEntity);
-        if (!response.IsSuccessStatusCode)
-            throw new KeyNotFoundException("Sorry, something went wrong while updating the product stock.");
+            throw new Exception("There is not enough stock for the selected Product.");
 
         var createdOrderEntity = await _createRepository.ExecuteAsync(requestedOrderEntity, cancellationToken);
-        await _mediator.Publish(new RegisteredOrderEvent(), cancellationToken);
+        await _mediator.Publish(new OrderCreatedEvent(request), cancellationToken);
         return createdOrderEntity.MapToResponse();
     }
 }

@@ -16,13 +16,14 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Refit" Version="6.3.2" />
+    <PackageReference Include="Refit" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SimpleEcommerceV2.MessageHandler\SimpleEcommerceV2.MessageHandler.csproj" />
     <ProjectReference Include="..\SimpleEcommerceV2.Notificator.Domain\SimpleEcommerceV2.Notificator.Domain.csproj" />
     <ProjectReference Include="..\SimpleEcommerceV2.Repositories\SimpleEcommerceV2.Repositories.csproj" />
+    <ProjectReference Include="..\SimpleEcommerceV2.Shared\SimpleEcommerceV2.Shared.csproj" />
   </ItemGroup>
 
 </Project>

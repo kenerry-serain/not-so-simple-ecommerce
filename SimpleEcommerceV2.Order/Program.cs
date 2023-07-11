@@ -3,19 +3,19 @@ using Autofac.Extensions.DependencyInjection;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using SimpleEcommerceV2.Order.Middlewares;
-using SimpleEcommerceV2.MessageHandler.Models;
 using SimpleEcommerceV2.Order.Modules;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using SimpleEcommerceV2.MessageHandler.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(applicationBuilder =>
 {
     applicationBuilder.RegisterModule<DomainModule>();
-    applicationBuilder.RegisterModule<SqsModule>();
+    applicationBuilder.RegisterModule<AwsModule>();
     applicationBuilder.RegisterModule(new InfrastructureModule(builder.Configuration));
 
     applicationBuilder
@@ -23,10 +23,11 @@ builder.Host.ConfigureContainer<ContainerBuilder>(applicationBuilder =>
         .SingleInstance();
 });
 
-builder.Services.Configure<AwsSqsMessageParams>(
-    "AwsSqsMessageSenderParams01",
-     builder.Configuration.GetSection("Order:AwsSqsMessageSenderParams01")
+builder.Services.Configure<AwsSnsMessageParams>(
+    "AwsSnsMessageSenderParams01",
+    builder.Configuration.GetSection("Order:AwsSnsMessageSenderParams01")
 );
+
 builder.Services.AddMemoryCache();
 builder.Services.AddHealthChecks();
 builder.Services.AddControllers();
@@ -66,11 +67,12 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
+    var passwordBytes = Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("Identity:Key")!);
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidIssuer = builder.Configuration.GetValue<string>("Identity:Issuer"),
         ValidAudience = builder.Configuration.GetValue<string>("Identity:Audience"),
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("Identity:Key"))),
+        IssuerSigningKey = new SymmetricSecurityKey(passwordBytes),
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,

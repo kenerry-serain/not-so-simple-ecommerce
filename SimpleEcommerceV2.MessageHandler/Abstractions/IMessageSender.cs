@@ -2,6 +2,6 @@
 {
     public interface IMessageSender
     {
-        Task<string> EnqueueAsync<TObject>(TObject messageBody);
+        Task<string> EnqueueAsync<TObject>(TObject messageBody, CancellationToken cancellationToken);
     }
 }

@@ -1,9 +1,9 @@
 ﻿using MediatR;
-using SimpleEcommerceV2.Order.Domain.InOut.Responses;
+using SimpleEcommerceV2.Shared.InOut.Responses;
 
 namespace SimpleEcommerceV2.Order.Domain.Commands;
 
-public class RegisterOrderCommand: IRequest<OrderResponse>
+public class CreateOrderCommand: IRequest<OrderResponse>
 {
     public int Id { get; set; }
     public int ProductId { get; init; }

@@ -24,7 +24,8 @@ namespace SimpleEcommerceV2.Main.Controllers
         (
             IMediator mediator, 
             IReadEntityRepository<ProductEntity> readRepository,
-            IStockReadRepository stockReadRepository
+            IStockReadRepository stockReadRepository,
+            IHttpContextAccessor context
         )
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));

@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEcommerceV2.Main.Doma
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleEcommerceV2.IdentityServer.Domain", "SimpleEcommerceV2.IdentityServer.Domain\SimpleEcommerceV2.IdentityServer.Domain.csproj", "{9E99A10F-0F94-4366-BA6B-3A71AC022D01}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleEcommerceV2.Shared", "SimpleEcommerceV2.Shared\SimpleEcommerceV2.Shared.csproj", "{863C1A4B-E5C3-4264-8B2C-3F86613B26AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{9E99A10F-0F94-4366-BA6B-3A71AC022D01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E99A10F-0F94-4366-BA6B-3A71AC022D01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E99A10F-0F94-4366-BA6B-3A71AC022D01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{863C1A4B-E5C3-4264-8B2C-3F86613B26AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{863C1A4B-E5C3-4264-8B2C-3F86613B26AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{863C1A4B-E5C3-4264-8B2C-3F86613B26AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{863C1A4B-E5C3-4264-8B2C-3F86613B26AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -103,6 +109,7 @@ Global
 		{AFD58B84-0BE2-4151-845E-C91847EA6294} = {B06648B1-3AFC-4843-910D-D40FF8AE17F3}
 		{2403757F-0DD6-4727-90FA-B7CA80964266} = {1E815AEB-4B2D-4168-AA3D-3DEFBDE8EF7E}
 		{9E99A10F-0F94-4366-BA6B-3A71AC022D01} = {1E815AEB-4B2D-4168-AA3D-3DEFBDE8EF7E}
+		{863C1A4B-E5C3-4264-8B2C-3F86613B26AA} = {1E815AEB-4B2D-4168-AA3D-3DEFBDE8EF7E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B7EC1997-9E54-4C56-B5D1-BF1134DEDC03}

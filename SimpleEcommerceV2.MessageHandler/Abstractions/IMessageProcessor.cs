@@ -4,6 +4,6 @@ namespace SimpleEcommerceV2.MessageHandler.Abstractions
 {
     public interface IMessageProcessor
     {
-        Task ProcessMessageAsync(QueueMessageParams message, CancellationToken cancellationToken);
+        Task ProcessMessageAsync(MessageParams message, CancellationToken cancellationToken);
     }
 }

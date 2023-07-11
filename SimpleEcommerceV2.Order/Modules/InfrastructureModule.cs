@@ -1,15 +1,12 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
 using Autofac.Core;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 using Refit;
-using SimpleEcommerceV2.Order.Domain.HttpHandlers.Contracts;
-using SimpleEcommerceV2.Order.Domain.InOut.Requests;
-using SimpleEcommerceV2.Order.Domain.InOut.Responses;
 using SimpleEcommerceV2.Order.Domain.Repositories.Contexts;
 using SimpleEcommerceV2.Repositories.Contracts;
 using SimpleEcommerceV2.Repositories.Implementations;
+using SimpleEcommerceV2.Shared.HttpHandlers.Contracts;
+using SimpleEcommerceV2.Shared.InOut.Requests;
 
 namespace SimpleEcommerceV2.Order.Modules
 {
@@ -39,28 +36,27 @@ namespace SimpleEcommerceV2.Order.Modules
               .As(typeof(ICreateEntityRepository<>))
               .WithParameter(
                   new ResolvedParameter(
-                      (i, c) => i.ParameterType == typeof(DbContext),
-                      (i, c) => c.Resolve<OrderContext>())
+                      (i, _) => i.ParameterType == typeof(DbContext),
+                      (_, c) => c.Resolve<OrderContext>())
               ).InstancePerLifetimeScope();
 
-            var identityServerApi = RestService.For<IIdentityServerApi>(_configuration.GetValue<string>("BaseAddress:Identity"));
-            builder.Register(_ =>
-            {
-                return identityServerApi;
-            });
+            var hostUrl = _configuration.GetValue<string>("BaseAddress:Identity")!;
+            var identityServerApi = RestService.For<IIdentityServerApi>(hostUrl);
+            builder.Register(_ => identityServerApi);
 
             builder.Register( _ =>
             {
                 var userRequest = new AuthRequest
                 (
-                    _configuration.GetValue<string>("Identity:Admin:User"),
-                    _configuration.GetValue<string>("Identity:Admin:User:Password")
+                    _configuration.GetValue<string>("Identity:Admin:User")!,
+                    _configuration.GetValue<string>("Identity:Admin:User:Password")!
                 );
 
-                return RestService.For<IMainApi>(_configuration.GetValue<string>("BaseAddress:Main"),
+                return RestService.For<IMainApi>(
+                    _configuration.GetValue<string>("BaseAddress:Main")!,
                     new RefitSettings
                     {
-                        AuthorizationHeaderValueGetter = ()=>
+                        AuthorizationHeaderValueGetter = (_,_)=>
                             identityServerApi.AuthAsync(userRequest)
                     });
 

@@ -15,7 +15,7 @@ namespace SimpleEcommerceV2.MessageHandler.Implementations
         private readonly ILogger<AwsSqsQueueMonitor> _logger;
         private readonly AwsSqsQueueMonitorParams _monitorParams;
         private readonly IMemoryCache _memoryCache;
-        private string _queueUrl;
+        private string _queueUrl = string.Empty;
 
         public AwsSqsQueueMonitor
         (
@@ -44,12 +44,12 @@ namespace SimpleEcommerceV2.MessageHandler.Implementations
                 }
                 catch (OperationCanceledException exception)
                 {
-                    _logger.LogInformation(exception, "Monitor stopped");
+                    _logger.LogWarning(exception, "Monitor stopped");
                     break;
                 }
-                catch (Exception ex)
+                catch (Exception exception)
                 {
-                    _logger.LogError(ex, "Error verifying queue");
+                    _logger.LogError(exception, "Error verifying queue");
                 }
             }
         }
@@ -93,7 +93,7 @@ namespace SimpleEcommerceV2.MessageHandler.Implementations
                 _logger.LogInformation("{QueueName} received {MessageId}",
                     _monitorParams.QueueName, message.MessageId);
 
-                var messageParams = new QueueMessageParams(message.Body, message.MessageId);
+                var messageParams = new MessageParams(message.Body, message.MessageId);
                 var start = DateTime.Now;
                 
                 _logger.LogInformation($"{start.ToLongTimeString()}");

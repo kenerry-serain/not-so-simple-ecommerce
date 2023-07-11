@@ -1,8 +1,7 @@
 ﻿using Refit;
-using SimpleEcommerceV2.Order.Domain.InOut.Requests;
-using SimpleEcommerceV2.Order.Domain.InOut.Responses;
+using SimpleEcommerceV2.Shared.InOut.Requests;
 
-namespace SimpleEcommerceV2.Order.Domain.HttpHandlers.Contracts
+namespace SimpleEcommerceV2.Shared.HttpHandlers.Contracts
 {
     public interface IIdentityServerApi
     {

@@ -5,7 +5,7 @@ namespace SimpleEcommerceV2.Order.Domain.Mappings
 {
     public static class ProductCommandToEntityMapping
     {
-        public static OrderEntity MapToEntity(this RegisterOrderCommand order)
+        public static OrderEntity MapToEntity(this CreateOrderCommand order)
         {
             return new OrderEntity
             {

@@ -1,8 +1,8 @@
 ﻿namespace SimpleEcommerceV2.MessageHandler.Models
 {
-    public class QueueMessageParams
+    public class MessageParams
     {
-        public QueueMessageParams(string body, string messageId)
+        public MessageParams(string body, string messageId)
         {
             Body = body;
             MessageId = messageId;

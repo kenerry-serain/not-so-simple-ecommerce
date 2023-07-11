@@ -1,13 +1,13 @@
 ﻿using Refit;
-using SimpleEcommerceV2.Order.Domain.InOut.Responses;
+using SimpleEcommerceV2.Shared.InOut.Responses;
 
-namespace SimpleEcommerceV2.Order.Domain.HttpHandlers.Contracts
+namespace SimpleEcommerceV2.Shared.HttpHandlers.Contracts
 {
     public interface IMainApi
     {
         [Put("/main/api/product/{id}/stock")]
         [Headers("Authorization: Bearer")]
-        Task<ApiResponse<object>> UpdateAsync(int id, [Body] object payload);
+        Task<ApiResponse<object>> UpdateProductStockAsync(int id, [Body] object payload);
 
         [Get("/main/api/product/{id}/stock")]
         [Headers("Authorization: Bearer")]

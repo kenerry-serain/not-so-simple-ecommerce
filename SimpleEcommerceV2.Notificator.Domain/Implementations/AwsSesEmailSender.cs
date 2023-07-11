@@ -1,7 +1,6 @@
 ﻿using Amazon.SimpleEmail;
 using Amazon.SimpleEmail.Model;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using SimpleEcommerceV2.Notificator.Domain.Abstractions;
 using SimpleEcommerceV2.Notificator.Domain.Models;
 
@@ -38,14 +37,11 @@ namespace SimpleEcommerceV2.Notificator.Domain.Implementations;
                     BccAddresses = @params.BccAddresses?.ToList()
                 },
                 Template = @params.TemplateName,
-                TemplateData = JsonConvert.SerializeObject(new {username="kenerry"})
+                TemplateData = @params.TemplateData
             };
-
-            // TODO: Check sending email with attachment
 
             try
             {
-                // In case of sending failures, the client always throws an exception with a handled message.
                 var response = await _sesClient.SendTemplatedEmailAsync(sendRequest, cancellationToken);
 
                 _logger.LogInformation
@@ -59,6 +55,7 @@ namespace SimpleEcommerceV2.Notificator.Domain.Implementations;
             }
             catch (Exception exc)
             {
+                //TODO Rename Bea
                 _logger.LogError
                 (
                     exc,

@@ -1,0 +1,8 @@
+{
+  "Template": {
+    "TemplateName": "OrderCreated",
+    "SubjectPart": "Received Order",
+    "TextPart": "Hi {{Username}}, your order was successfully created!",
+    "HtmlPart": "<h1>Hi {{Username}}, your order was successfully created!</h1>"
+  }
+}

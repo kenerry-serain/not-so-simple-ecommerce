@@ -1,93 +1,93 @@
 version: '3.8'
 networks:
-    simple-ecommerce:
+    not-so-simple-ecommerce:
         driver: bridge
         
 services:
-    simple-ecommerce.db:
-        container_name: simple-ecommerce-db
+    not-so-simple-ecommerce.db:
+        container_name: not-so-simple-ecommerce-db
         image: postgres:10.14
         ports:
             - '5432:5432'
         networks:
-            - simple-ecommerce
+            - not-so-simple-ecommerce
         env_file:
           - ./.env
 
-    simple-ecommerce.main:
-        container_name: simple-ecommerce-main
-        image: simple-ecommerce/simple-ecommerce-main
+    not-so-simple-ecommerce.main:
+        container_name: not-so-simple-ecommerce-main
+        image: not-so-simple-ecommerce/not-so-simple-ecommerce-main
         ports:
           - '5000:443'
         build:
             context: .
-            dockerfile: SimpleEcommerceV2.Main/Dockerfile
+            dockerfile: NotSoSimpleEcommerce.Main/Dockerfile
         networks:
-            - simple-ecommerce
+            - not-so-simple-ecommerce
         env_file:
           - ./.env
         volumes:
           - ${CERTIFICATES_HOST_PATH}:${CERTIFICATES_CONTAINER_PATH}:ro
           - ${AWS_CREDENTIALS_HOST_PATH}:${AWS_CREDENTIALS_CONTAINER_PATH}:ro
 
-    simple-ecommerce.health-checks:
-        container_name: simple-ecommerce-health-checks
-        image: simple-ecommerce/simple-ecommerce-health-checks
+    not-so-simple-ecommerce.health-checks:
+        container_name: not-so-simple-ecommerce-health-checks
+        image: not-so-simple-ecommerce/not-so-simple-ecommerce-health-checks
         ports:
           - "5001:443"
         build:
             context: .
-            dockerfile: SimpleEcommerceV2.HealthChecks/Dockerfile
+            dockerfile: NotSoSimpleEcommerce.HealthChecks/Dockerfile
         networks:
-            - simple-ecommerce
+            - not-so-simple-ecommerce
         env_file:
           - ./.env
         volumes:
           - ${CERTIFICATES_HOST_PATH}:${CERTIFICATES_CONTAINER_PATH}:ro
           - ${AWS_CREDENTIALS_HOST_PATH}:${AWS_CREDENTIALS_CONTAINER_PATH}:ro
   
-    simple-ecommerce.order:
-        container_name: simple-ecommerce-order
-        image: simple-ecommerce/simple-ecommerce-order
+    not-so-simple-ecommerce.order:
+        container_name: not-so-simple-ecommerce-order
+        image: not-so-simple-ecommerce/not-so-simple-ecommerce-order
         ports:
           - "5002:443"
         build:
           context: .
-          dockerfile: SimpleEcommerceV2.Order/Dockerfile
+          dockerfile: NotSoSimpleEcommerce.Order/Dockerfile
         networks:
-            - simple-ecommerce
+            - not-so-simple-ecommerce
         env_file:
           - ./.env
         volumes:
           - ${CERTIFICATES_HOST_PATH}:${CERTIFICATES_CONTAINER_PATH}:ro
           - ${AWS_CREDENTIALS_HOST_PATH}:${AWS_CREDENTIALS_CONTAINER_PATH}:ro
 
-    simple-ecommerce.notificator:
-      container_name: simple-ecommerce-notificator
-      image: simple-ecommerce/simple-ecommerce-notificator
+    not-so-simple-ecommerce.notificator:
+      container_name: not-so-simple-ecommerce-notificator
+      image: not-so-simple-ecommerce/not-so-simple-ecommerce-notificator
       ports:
         - "5003:443"
       build:
         context: .
-        dockerfile: SimpleEcommerceV2.Notificator/Dockerfile
+        dockerfile: NotSoSimpleEcommerce.Notificator/Dockerfile
       networks:
-        - simple-ecommerce
+        - not-so-simple-ecommerce
       env_file:
         - ./.env
       volumes:
         - ${CERTIFICATES_HOST_PATH}:${CERTIFICATES_CONTAINER_PATH}:ro
         - ${AWS_CREDENTIALS_HOST_PATH}:${AWS_CREDENTIALS_CONTAINER_PATH}:ro
 
-    simple-ecommerce.identity-server:
-      container_name: simple-ecommerce-identity-server
-      image: simple-ecommerce/simple-ecommerce-identity-server
+    not-so-simple-ecommerce.identity-server:
+      container_name: not-so-simple-ecommerce-identity-server
+      image: not-so-simple-ecommerce/not-so-simple-ecommerce-identity-server
       ports:
         - "5004:443"
       build:
         context: .
-        dockerfile: SimpleEcommerceV2.IdentityServer/Dockerfile
+        dockerfile: NotSoSimpleEcommerce.IdentityServer/Dockerfile
       networks:
-        - simple-ecommerce
+        - not-so-simple-ecommerce
       env_file:
         - ./.env
       volumes:

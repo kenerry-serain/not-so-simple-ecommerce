@@ -2,9 +2,9 @@
 using Autofac;
 using Autofac.Core;
 using Microsoft.Extensions.Options;
-using NotSoSimpleEcommerce.MessageHandler.Abstractions;
-using NotSoSimpleEcommerce.MessageHandler.Implementations;
-using NotSoSimpleEcommerce.MessageHandler.Models;
+using NotSoSimpleEcommerce.SqsHandler.Abstractions;
+using NotSoSimpleEcommerce.SqsHandler.Implementations;
+using NotSoSimpleEcommerce.SqsHandler.Models;
 
 namespace NotSoSimpleEcommerce.Order.Modules
 {
@@ -24,8 +24,8 @@ namespace NotSoSimpleEcommerce.Order.Modules
                 )
                 .WithParameter(
                     new ResolvedParameter(
-                        (i, _) => i.ParameterType == typeof(AwsSqsMessageParams),
-                        (_, c) => c.Resolve<IOptionsSnapshot<AwsSqsMessageParams>>()
+                        (i, _) => i.ParameterType == typeof(AwsSqsMessageSenderParams),
+                        (_, c) => c.Resolve<IOptionsSnapshot<AwsSqsMessageSenderParams>>()
                             .Get("AwsSqsMessageSenderParams01"))
                 );
         }

@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "SimpleEcommerce.Notificator": {
+    "NotSoSimpleEcommerce.Notificator": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

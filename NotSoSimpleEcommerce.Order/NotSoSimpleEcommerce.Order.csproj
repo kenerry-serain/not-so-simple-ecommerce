@@ -12,7 +12,6 @@
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.5" />
     <PackageReference Include="Autofac" Version="7.0.1" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.7" />
     <PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.19" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -40,8 +39,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\NotSoSimpleEcommerce.MessageHandler\NotSoSimpleEcommerce.MessageHandler.csproj" />
-      <ProjectReference Include="..\NotSoSimpleEcommerce.Notificator.Domain\NotSoSimpleEcommerce.Notificator.Domain.csproj" />
       <ProjectReference Include="..\NotSoSimpleEcommerce.Order.Domain\NotSoSimpleEcommerce.Order.Domain.csproj" />
     </ItemGroup>
 

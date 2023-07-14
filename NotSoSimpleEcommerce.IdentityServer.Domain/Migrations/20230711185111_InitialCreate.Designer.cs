@@ -48,7 +48,7 @@ namespace NotSoSimpleEcommerce.IdentityServer.Domain.Migrations
                         {
                             Id = 1,
                             Email = "admin@not-so-simple-ecommerce.com",
-                            Password = "b�cc���/#TCx*1�W�83}�ÛD2c*"
+                            Password = "yJ�w�flVG6�@85F�Q�S�0�C�s'P��"
                         });
                 });
 #pragma warning restore 612, 618

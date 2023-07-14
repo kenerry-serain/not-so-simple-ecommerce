@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "SimpleEcommerce.Product": {
+    "NotSoSimpleEcommerce.Product": {
       "commandName": "Project",
       "launchBrowser": false,
       "environmentVariables": {

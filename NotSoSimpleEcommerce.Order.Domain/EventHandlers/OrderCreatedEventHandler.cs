@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using NotSoSimpleEcommerce.MessageHandler.Abstractions;
-using NotSoSimpleEcommerce.Notificator.Domain.Models;
 using NotSoSimpleEcommerce.Order.Domain.Events;
+using NotSoSimpleEcommerce.SesHandler.Models;
 using NotSoSimpleEcommerce.Shared.Consts;
+using NotSoSimpleEcommerce.SqsHandler.Abstractions;
 
 namespace NotSoSimpleEcommerce.Order.Domain.EventHandlers;
 
@@ -35,6 +35,5 @@ public sealed class OrderCreatedEventHandler: INotificationHandler<OrderCreatedE
         );
         //TODO ProductStock only on confirmed Order
         await _messageToEmailQueue.EnqueueAsync(emailParams, cancellationToken);
-        // await _messageProductStockQueue.EnqueueAsync(@event, cancellationToken);
     }
 }

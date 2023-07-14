@@ -5,16 +5,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["SimpleEcommerce.Notificator/SimpleEcommerce.Notificator.csproj", "SimpleEcommerce.Notificator/"]
-RUN dotnet restore "SimpleEcommerce.Notificator/SimpleEcommerce.Notificator.csproj"
+COPY ["NotSoSimpleEcommerce.Notificator/NotSoSimpleEcommerce.Notificator.csproj", "NotSoSimpleEcommerce.Notificator/"]
+RUN dotnet restore "NotSoSimpleEcommerce.Notificator/NotSoSimpleEcommerce.Notificator.csproj"
 COPY . .
-WORKDIR "/src/SimpleEcommerce.Notificator"
-RUN dotnet build "SimpleEcommerce.Notificator.csproj" -c Release -o /app/build
+WORKDIR "/src/NotSoSimpleEcommerce.Notificator"
+RUN dotnet build "NotSoSimpleEcommerce.Notificator.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "SimpleEcommerce.Notificator.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "NotSoSimpleEcommerce.Notificator.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "SimpleEcommerce.Notificator.dll"]
+ENTRYPOINT ["dotnet", "NotSoSimpleEcommerce.Notificator.dll"]

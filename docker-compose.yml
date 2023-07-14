@@ -30,14 +30,14 @@ services:
           - ${CERTIFICATES_HOST_PATH}:${CERTIFICATES_CONTAINER_PATH}:ro
           - ${AWS_CREDENTIALS_HOST_PATH}:${AWS_CREDENTIALS_CONTAINER_PATH}:ro
 
-    not-so-simple-ecommerce.health-checks:
-        container_name: not-so-simple-ecommerce-health-checks
-        image: not-so-simple-ecommerce/not-so-simple-ecommerce-health-checks
+    not-so-simple-ecommerce.health-checker:
+        container_name: not-so-simple-ecommerce-health-checker
+        image: not-so-simple-ecommerce/not-so-simple-ecommerce-health-checker
         ports:
           - "5001:443"
         build:
             context: .
-            dockerfile: NotSoSimpleEcommerce.HealthChecks/Dockerfile
+            dockerfile: NotSoSimpleEcommerce.HealthChecker/Dockerfile
         networks:
             - not-so-simple-ecommerce
         env_file:
@@ -45,7 +45,7 @@ services:
         volumes:
           - ${CERTIFICATES_HOST_PATH}:${CERTIFICATES_CONTAINER_PATH}:ro
           - ${AWS_CREDENTIALS_HOST_PATH}:${AWS_CREDENTIALS_CONTAINER_PATH}:ro
-  
+
     not-so-simple-ecommerce.order:
         container_name: not-so-simple-ecommerce-order
         image: not-so-simple-ecommerce/not-so-simple-ecommerce-order
@@ -86,6 +86,22 @@ services:
       build:
         context: .
         dockerfile: NotSoSimpleEcommerce.IdentityServer/Dockerfile
+      networks:
+        - not-so-simple-ecommerce
+      env_file:
+        - ./.env
+      volumes:
+        - ${CERTIFICATES_HOST_PATH}:${CERTIFICATES_CONTAINER_PATH}:ro
+        - ${AWS_CREDENTIALS_HOST_PATH}:${AWS_CREDENTIALS_CONTAINER_PATH}:ro
+
+    not-so-simple-ecommerce.invoice-generator:
+      container_name: not-so-simple-ecommerce-invoice-generator
+      image: not-so-simple-ecommerce/not-so-simple-ecommerce-invoice-generator
+      ports:
+        - "5005:443"
+      build:
+        context: .
+        dockerfile: NotSoSimpleEcommerce.InvoiceGenerator/Dockerfile
       networks:
         - not-so-simple-ecommerce
       env_file:

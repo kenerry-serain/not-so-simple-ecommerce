@@ -1,8 +1,8 @@
 ﻿using Amazon.SimpleEmail;
 using Amazon.SQS;
 using Autofac;
-using NotSoSimpleEcommerce.Notificator.Domain.Abstractions;
-using NotSoSimpleEcommerce.Notificator.Domain.Implementations;
+using NotSoSimpleEcommerce.SesHandler.Abstractions;
+using NotSoSimpleEcommerce.SesHandler.Implementations;
 
 namespace NotSoSimpleEcommerce.Notificator.Modules;
 

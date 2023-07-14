@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using NotSoSimpleEcommerce.MessageHandler.Models;
 using NotSoSimpleEcommerce.Order.Middlewares;
 using NotSoSimpleEcommerce.Order.Modules;
+using NotSoSimpleEcommerce.SqsHandler.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
@@ -23,12 +23,12 @@ builder.Host.ConfigureContainer<ContainerBuilder>(applicationBuilder =>
         .SingleInstance();
 });
 
-builder.Services.Configure<AwsSqsMessageParams>(
+builder.Services.Configure<AwsSqsMessageSenderParams>(
     "AwsSqsMessageSenderParams01",
     builder.Configuration.GetSection("Order:AwsSqsMessageSenderParams01")
 );
 
-builder.Services.Configure<AwsSqsMessageParams>(
+builder.Services.Configure<AwsSqsMessageSenderParams>(
     "AwsSqsMessageSenderParams02",
     builder.Configuration.GetSection("Order:AwsSqsMessageSenderParams02")
 );

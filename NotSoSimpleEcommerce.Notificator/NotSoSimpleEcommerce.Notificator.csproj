@@ -13,7 +13,7 @@
         <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.5" />
         <PackageReference Include="Autofac" Version="7.0.1" />
         <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
-        <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.7" />
+        <PackageReference Include="AWSSDK.SQS" Version="3.7.103.5" />
         <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
         <PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />
         <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
@@ -28,8 +28,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\NotSoSimpleEcommerce.MessageHandler\NotSoSimpleEcommerce.MessageHandler.csproj" />
-      <ProjectReference Include="..\NotSoSimpleEcommerce.Notificator.Domain\NotSoSimpleEcommerce.Notificator.Domain.csproj" />
+      <None Include="Templates\order-created-template.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\NotSoSimpleEcommerce.SesHandler\NotSoSimpleEcommerce.SesHandler.csproj" />
+      <ProjectReference Include="..\NotSoSimpleEcommerce.SqsHandler\NotSoSimpleEcommerce.SqsHandler.csproj" />
     </ItemGroup>
 
 </Project>

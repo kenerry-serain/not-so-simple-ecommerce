@@ -8,7 +8,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NotSoSimpleEcommerce.Main.Middlewares;
 using NotSoSimpleEcommerce.Main.Modules;
-using NotSoSimpleEcommerce.MessageHandler.Models;
+using NotSoSimpleEcommerce.S3Handler.Models;
+using NotSoSimpleEcommerce.SqsHandler.Models;
 using Serilog;
 using Serilog.Events;
 using Serilog.Exceptions;
@@ -26,6 +27,7 @@ try
     builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
     builder.Host.ConfigureContainer<ContainerBuilder>(applicationBuilder =>
     {
+        applicationBuilder.RegisterModule<AwsModule>();
         applicationBuilder.RegisterModule<DomainModule>();
         applicationBuilder.RegisterModule(new InfrastructureModule(builder.Configuration));
         applicationBuilder
@@ -36,6 +38,10 @@ try
     builder.Services.Configure<AwsSqsQueueMonitorParams>(
         "AwsSqsQueueMonitorParams01",
         builder.Configuration.GetSection("Main:AwsSqsQueueMonitorParams01")
+    );
+    builder.Services.Configure<AwsS3BucketParams>(
+        "AwsS3Params01",
+        builder.Configuration.GetSection("AwsS3Params01")
     );
     builder.Services.AddMemoryCache();
     builder.Services.AddHealthChecks();

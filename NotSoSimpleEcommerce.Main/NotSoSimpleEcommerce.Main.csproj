@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NotSoSimpleEcommerce.Main.Domain\NotSoSimpleEcommerce.Main.Domain.csproj" />
-    <ProjectReference Include="..\NotSoSimpleEcommerce.MessageHandler\NotSoSimpleEcommerce.MessageHandler.csproj" />
   </ItemGroup>
 
 </Project>

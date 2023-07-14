@@ -2,8 +2,8 @@
 using Autofac.Extensions.DependencyInjection;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using NotSoSimpleEcommerce.MessageHandler.Models;
 using NotSoSimpleEcommerce.Notificator.Modules;
+using NotSoSimpleEcommerce.SqsHandler.Models;
 using Serilog;
 using Serilog.Events;
 using Serilog.Exceptions;

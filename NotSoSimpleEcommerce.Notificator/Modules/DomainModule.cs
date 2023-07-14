@@ -1,10 +1,10 @@
 ﻿using Autofac;
 using Autofac.Core;
 using Microsoft.Extensions.Options;
-using NotSoSimpleEcommerce.MessageHandler.Abstractions;
-using NotSoSimpleEcommerce.MessageHandler.Implementations;
-using NotSoSimpleEcommerce.MessageHandler.Models;
-using NotSoSimpleEcommerce.Notificator.Domain.Tasks;
+using NotSoSimpleEcommerce.Notificator.Tasks;
+using NotSoSimpleEcommerce.SqsHandler.Abstractions;
+using NotSoSimpleEcommerce.SqsHandler.Implementations;
+using NotSoSimpleEcommerce.SqsHandler.Models;
 
 namespace NotSoSimpleEcommerce.Notificator.Modules;
 

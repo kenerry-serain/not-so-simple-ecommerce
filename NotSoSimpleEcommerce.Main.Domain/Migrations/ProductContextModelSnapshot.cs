@@ -20,7 +20,7 @@ namespace NotSoSimpleEcommerce.Main.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("SimpleEcommerce.Main.Models.ProductEntity", b =>
+            modelBuilder.Entity("NotSoSimpleEcommerce.Main.Models.ProductEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -39,7 +39,7 @@ namespace NotSoSimpleEcommerce.Main.Migrations
                     b.ToTable("Product");
                 });
 
-            modelBuilder.Entity("SimpleEcommerce.Main.Models.StockEntity", b =>
+            modelBuilder.Entity("NotSoSimpleEcommerce.Main.Models.StockEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

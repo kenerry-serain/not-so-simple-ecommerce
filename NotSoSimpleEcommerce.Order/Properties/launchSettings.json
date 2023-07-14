@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "SimpleEcommerce.Order": {
+    "NotSoSimpleEcommerce.Order": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

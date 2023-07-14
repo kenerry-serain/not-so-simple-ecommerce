@@ -89,7 +89,12 @@ namespace NotSoSimpleEcommerce.Main.Controllers
 
         [HttpPut("{id:int}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> UpdateAsync([FromRoute]int id, [FromBody] ProductRequest productRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateAsync
+        (
+            [FromRoute]int id, 
+            [FromBody] ProductRequest productRequest, 
+            CancellationToken cancellationToken
+        )
         {
             var product = await _readRepository.GetByIdAsync(id, cancellationToken);
             if (product is null)
@@ -97,6 +102,23 @@ namespace NotSoSimpleEcommerce.Main.Controllers
             
             var updatedProduct = await _mediator.Send(productRequest.MapToUpdateCommand(id), cancellationToken);
             return Ok(updatedProduct);
+        }
+        
+        [HttpPut("{id:int}/image")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> UpdateProductImageAsync
+        (
+            [FromRoute]int id,
+            IFormFile image,
+            CancellationToken cancellationToken
+        )
+        {
+            var product = await _readRepository.GetByIdAsync(id, cancellationToken);
+            if (product is null)
+                return NotFound();
+            
+            var imageUrl = await _mediator.Send(new UpdateProductImageCommand(id, image), cancellationToken);
+            return Ok(new {imageUrl});
         }
         
         [HttpPut("{id:int}/stock")]
@@ -120,6 +142,18 @@ namespace NotSoSimpleEcommerce.Main.Controllers
                 return NotFound();
             
             await _mediator.Send(new DeleteProductCommand(id), cancellationToken);
+            return Ok();
+        }
+        
+        [HttpDelete("{id:int}/image")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> DeleteAsync([FromRoute] int id, [FromQuery] string objectKey, CancellationToken cancellationToken)
+        {
+            var product = await _readRepository.GetByIdAsync(id, cancellationToken);
+            if (product is null)
+                return NotFound();
+            
+            await _mediator.Send(new DeleteProductImageCommand(id, objectKey), cancellationToken);
             return Ok();
         }
     }

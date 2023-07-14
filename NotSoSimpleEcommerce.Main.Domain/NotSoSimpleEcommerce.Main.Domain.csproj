@@ -18,11 +18,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NotSoSimpleEcommerce.MessageHandler\NotSoSimpleEcommerce.MessageHandler.csproj" />
-    <ProjectReference Include="..\NotSoSimpleEcommerce.Notificator.Domain\NotSoSimpleEcommerce.Notificator.Domain.csproj" />
     <ProjectReference Include="..\NotSoSimpleEcommerce.Order.Domain\NotSoSimpleEcommerce.Order.Domain.csproj" />
     <ProjectReference Include="..\NotSoSimpleEcommerce.Repositories\NotSoSimpleEcommerce.Repositories.csproj" />
+    <ProjectReference Include="..\NotSoSimpleEcommerce.S3Handler\NotSoSimpleEcommerce.S3Handler.csproj" />
     <ProjectReference Include="..\NotSoSimpleEcommerce.Shared\NotSoSimpleEcommerce.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.AspNetCore.Http.Features">
+      <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\6.0.9\Microsoft.AspNetCore.Http.Features.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

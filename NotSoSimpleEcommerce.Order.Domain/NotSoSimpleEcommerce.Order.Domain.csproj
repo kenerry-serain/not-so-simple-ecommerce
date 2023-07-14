@@ -11,6 +11,7 @@
     <PackageReference Include="MediatR.Contracts" Version="2.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
       <PrivateAssets>all</PrivateAssets>
@@ -20,10 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NotSoSimpleEcommerce.MessageHandler\NotSoSimpleEcommerce.MessageHandler.csproj" />
-    <ProjectReference Include="..\NotSoSimpleEcommerce.Notificator.Domain\NotSoSimpleEcommerce.Notificator.Domain.csproj" />
     <ProjectReference Include="..\NotSoSimpleEcommerce.Repositories\NotSoSimpleEcommerce.Repositories.csproj" />
+    <ProjectReference Include="..\NotSoSimpleEcommerce.SesHandler\NotSoSimpleEcommerce.SesHandler.csproj" />
     <ProjectReference Include="..\NotSoSimpleEcommerce.Shared\NotSoSimpleEcommerce.Shared.csproj" />
+    <ProjectReference Include="..\NotSoSimpleEcommerce.SqsHandler\NotSoSimpleEcommerce.SqsHandler.csproj" />
   </ItemGroup>
 
   <ItemGroup>

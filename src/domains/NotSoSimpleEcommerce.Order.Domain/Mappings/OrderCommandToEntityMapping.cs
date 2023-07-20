@@ -1,7 +1,6 @@
 ﻿using NotSoSimpleEcommerce.Order.Domain.Commands;
-using NotSoSimpleEcommerce.Order.Domain.Models;
 using NotSoSimpleEcommerce.Shared.Enums;
-using NotSoSimpleEcommerce.Shared.InOut.Responses;
+using NotSoSimpleEcommerce.Shared.Models;
 
 namespace NotSoSimpleEcommerce.Order.Domain.Mappings
 {
@@ -14,7 +13,7 @@ namespace NotSoSimpleEcommerce.Order.Domain.Mappings
                 productId: order.ProductId,
                 quantity: order.Quantity,
                 boughtBy:order.BoughtBy,
-                status: OrderStatus.Created
+                statusId: OrderStatus.Created
             );
         }
     }

@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using NotSoSimpleEcommerce.IdentityServer.Domain.Models;
+using NotSoSimpleEcommerce.IdentityServer.Domain.Repositories.Configurations;
 
 namespace NotSoSimpleEcommerce.IdentityServer.Domain.Repositories.Contexts
 {
@@ -10,33 +11,29 @@ namespace NotSoSimpleEcommerce.IdentityServer.Domain.Repositories.Contexts
     {
         private readonly IConfiguration _configuration;
 
-        public IdentityServerContext(DbContextOptions<IdentityServerContext> options, IConfiguration configuration)
-        : base(options)
+        public IdentityServerContext(DbContextOptions<IdentityServerContext> options, IConfiguration configuration) :
+            base(options)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
-        public DbSet<UserEntity> User { get; set; }
-
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
-        {
-            var saveChangesResult =  base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-            ChangeTracker.Clear();
-            return saveChangesResult;
-        }
+        public DbSet<UserEntity> User { get; set; } = null!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var hashedPassword = SHA256.HashData(
-                Encoding.UTF8.GetBytes(_configuration.GetValue<string>("Identity:Admin:User:Password")!));
+            var password =_configuration.GetValue<string>("Identity:Admin:User:Password")!;
+            var hashedPassword = SHA256.HashData(Encoding.UTF8.GetBytes(password));
+     
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserEntityTypeConfiguration).Assembly);
+               
             modelBuilder.Entity<UserEntity>().HasData(
                 new UserEntity
                 (
-                    id: 1,
+                    id:1,
                     email: _configuration.GetValue<string>("Identity:Admin:User")!,
                     password:Encoding.UTF8.GetString(hashedPassword)
                 )
             );
-
+            
             base.OnModelCreating(modelBuilder);
         }
     }

@@ -23,9 +23,9 @@ try
         .AddInMemoryStorage();
 
     builder.Services.AddControllers();
+    builder.Host.UseSerilog();
 
     var app = builder.Build();
-
     app.Map("/healthchecks", applicationBuilder =>
     {
         applicationBuilder.UseRouting();
@@ -47,6 +47,10 @@ try
 
     app.Run();
 
+}
+catch (HostAbortedException exception)
+{
+    Log.Warning(exception, "Executing migrations? All good.");
 }
 catch (Exception exception)
 {

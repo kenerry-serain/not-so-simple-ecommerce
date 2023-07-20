@@ -1,5 +1,5 @@
-﻿using NotSoSimpleEcommerce.Order.Domain.Models;
-using NotSoSimpleEcommerce.Shared.InOut.Responses;
+﻿using NotSoSimpleEcommerce.Shared.InOut.Responses;
+using NotSoSimpleEcommerce.Shared.Models;
 
 namespace NotSoSimpleEcommerce.Order.Domain.Mappings
 {
@@ -7,7 +7,7 @@ namespace NotSoSimpleEcommerce.Order.Domain.Mappings
     {
         public static OrderResponse MapToResponse(this OrderEntity order)
         {
-            return new OrderResponse(order.Id, order.ProductId, order.Quantity, order.BoughtBy, order.Status);
+            return new OrderResponse(order.Id, order.ProductId, order.Quantity, order.BoughtBy, order.StatusId);
         }
         
         public static IEnumerable<OrderResponse> MapToResponse(this IEnumerable<OrderEntity> orders)

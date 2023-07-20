@@ -1,5 +1,5 @@
 ﻿using NotSoSimpleEcommerce.Main.Domain.InOut.Responses;
-using NotSoSimpleEcommerce.Main.Domain.Models;
+using NotSoSimpleEcommerce.Shared.Models;
 
 namespace NotSoSimpleEcommerce.Main.Domain.Mappings
 {

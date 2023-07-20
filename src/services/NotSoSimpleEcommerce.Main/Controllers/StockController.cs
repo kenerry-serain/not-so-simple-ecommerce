@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NotSoSimpleEcommerce.Main.Domain.Mappings;
-using NotSoSimpleEcommerce.Main.Domain.Models;
 using NotSoSimpleEcommerce.Main.Domain.Repositories.Contracts;
+using NotSoSimpleEcommerce.Shared.Models;
 
 namespace NotSoSimpleEcommerce.Main.Controllers
 {

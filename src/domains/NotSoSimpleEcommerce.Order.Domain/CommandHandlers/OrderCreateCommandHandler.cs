@@ -2,10 +2,10 @@
 using NotSoSimpleEcommerce.Order.Domain.Commands;
 using NotSoSimpleEcommerce.Order.Domain.Events;
 using NotSoSimpleEcommerce.Order.Domain.Mappings;
-using NotSoSimpleEcommerce.Order.Domain.Models;
 using NotSoSimpleEcommerce.Repositories.Contracts;
 using NotSoSimpleEcommerce.Shared.HttpHandlers.Contracts;
 using NotSoSimpleEcommerce.Shared.InOut.Responses;
+using NotSoSimpleEcommerce.Shared.Models;
 
 namespace NotSoSimpleEcommerce.Order.Domain.CommandHandlers;
 

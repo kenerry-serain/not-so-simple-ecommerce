@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NotSoSimpleEcommerce.Main.Domain.Models;
 using NotSoSimpleEcommerce.Main.Domain.Repositories.Contexts;
 using NotSoSimpleEcommerce.Main.Domain.Repositories.Contracts;
 using NotSoSimpleEcommerce.Repositories.Implementations;
+using NotSoSimpleEcommerce.Shared.Models;
 
 namespace NotSoSimpleEcommerce.Main.Domain.Repositories.Implementations;
 

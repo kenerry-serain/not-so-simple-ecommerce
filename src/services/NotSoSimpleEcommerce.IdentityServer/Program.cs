@@ -17,8 +17,8 @@ Log.Logger = new LoggerConfiguration()
 try
 {
     Log.Information("Starting Identity Server Microservice");
-
     var builder = WebApplication.CreateBuilder(args);
+    builder.Host.UseSerilog();
     builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
     builder.Host.ConfigureContainer<ContainerBuilder>(applicationBuilder =>
     {
@@ -29,7 +29,6 @@ try
             .RegisterType<GlobalErrorHandlerMiddleware>()
             .SingleInstance();
     });
-
     builder.Services.AddHealthChecks();
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
@@ -58,7 +57,10 @@ try
     });
 
     app.Run();
-
+}
+catch (HostAbortedException exception)
+{
+    Log.Warning(exception, "Executing migrations? All good.");
 }
 catch (Exception exception)
 {

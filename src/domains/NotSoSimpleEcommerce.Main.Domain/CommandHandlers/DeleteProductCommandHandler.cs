@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using NotSoSimpleEcommerce.Main.Domain.Commands;
-using NotSoSimpleEcommerce.Main.Domain.Models;
 using NotSoSimpleEcommerce.Repositories.Contracts;
+using NotSoSimpleEcommerce.Shared.Models;
 
 namespace NotSoSimpleEcommerce.Main.Domain.CommandHandlers
 {

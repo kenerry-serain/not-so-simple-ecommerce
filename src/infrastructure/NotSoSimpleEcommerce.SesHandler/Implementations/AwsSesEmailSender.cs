@@ -45,23 +45,18 @@ namespace NotSoSimpleEcommerce.SesHandler.Implementations;
 
                 _logger.LogInformation
                 (
-                    "{BeaMailProviderName} {BeaMailProviderStatusCode} {BeaMailStatus} {BeaMailMoreInfo}",
-                    "AmazonSesProviderName",
+                    "Email sent: {StatusCode}, Response {MailMoreInfo}",
                     response.HttpStatusCode,
-                    "EmailSenderConstants.EmailStatus.Sent",
-                    "MessageId: " + response.MessageId
+                    response
                 );
             }
-            catch (Exception exc)
+            catch (Exception exception)
             {
-                //TODO Rename Bea
                 _logger.LogError
                 (
-                    exc,
-                    "{BeaMailProviderName} {BeaMailStatus} {BeaMailMoreInfo}",
-                    "AmazonSesProviderName",
-                    "EmailSenderConstants.EmailStatus.Sent",
-                    exc.Message
+                    exception,
+                    "An error happened while sending an email: {MailMoreInfo}",
+                    exception
                 );
             }
         }

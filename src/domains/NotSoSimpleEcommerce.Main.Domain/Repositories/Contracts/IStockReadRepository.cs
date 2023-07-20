@@ -1,5 +1,5 @@
-﻿using NotSoSimpleEcommerce.Main.Domain.Models;
-using NotSoSimpleEcommerce.Repositories.Contracts;
+﻿using NotSoSimpleEcommerce.Repositories.Contracts;
+using NotSoSimpleEcommerce.Shared.Models;
 
 namespace NotSoSimpleEcommerce.Main.Domain.Repositories.Contracts;
 

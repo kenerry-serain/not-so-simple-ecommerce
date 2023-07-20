@@ -2,9 +2,9 @@
 using NotSoSimpleEcommerce.Main.Domain.Commands;
 using NotSoSimpleEcommerce.Main.Domain.InOut.Responses;
 using NotSoSimpleEcommerce.Main.Domain.Mappings;
-using NotSoSimpleEcommerce.Main.Domain.Models;
 using NotSoSimpleEcommerce.Main.Domain.Repositories.Contracts;
 using NotSoSimpleEcommerce.Repositories.Contracts;
+using NotSoSimpleEcommerce.Shared.Models;
 
 namespace NotSoSimpleEcommerce.Main.Domain.CommandHandlers
 {

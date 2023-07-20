@@ -60,7 +60,12 @@ namespace NotSoSimpleEcommerce.SqsHandler.Implementations
             if (messageMd5 != responseMd5)
                 throw new AwsSqsMessageSenderException("The message is corrupted.");
 
-            _logger.LogInformation($"Message sent {response.MessageId} to Queue {_senderSenderParams.QueueName}");
+            _logger.LogInformation
+            (
+                "Message sent {MessageId} to Queue {QueueName}", 
+                response.MessageId,
+                _senderSenderParams.QueueName
+            );
 
             return response.MessageId;
         }

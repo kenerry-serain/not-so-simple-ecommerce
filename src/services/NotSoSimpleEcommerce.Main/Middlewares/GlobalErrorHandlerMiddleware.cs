@@ -23,8 +23,7 @@ namespace NotSoSimpleEcommerce.Main.Middlewares
             }
             catch (Exception exception)
             {
-                _logger.LogError($"[Exception]: {exception}");
-
+                _logger.LogError("[Exception]: {exception}", exception);
                 await HandleExceptionAsync(context, exception);
             }
         }

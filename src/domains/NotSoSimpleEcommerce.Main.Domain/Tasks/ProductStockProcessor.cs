@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using NotSoSimpleEcommerce.Order.Domain.Events;
 using NotSoSimpleEcommerce.Shared.Events;
 using NotSoSimpleEcommerce.Shared.HttpHandlers.Contracts;
 using NotSoSimpleEcommerce.SqsHandler.Abstractions;

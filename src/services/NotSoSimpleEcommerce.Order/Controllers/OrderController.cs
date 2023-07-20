@@ -2,11 +2,10 @@
 using MediatR;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using NotSoSimpleEcommerce.Main.Domain.Mappings;
 using NotSoSimpleEcommerce.Order.Domain.Mappings;
-using NotSoSimpleEcommerce.Order.Domain.Models;
 using NotSoSimpleEcommerce.Repositories.Contracts;
 using NotSoSimpleEcommerce.Shared.InOut.Requests;
+using NotSoSimpleEcommerce.Shared.Models;
 
 namespace NotSoSimpleEcommerce.Order.Controllers;
 

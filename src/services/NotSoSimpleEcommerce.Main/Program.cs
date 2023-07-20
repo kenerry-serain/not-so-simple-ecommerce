@@ -94,6 +94,7 @@ try
         };
     });
     builder.Services.AddAuthorization();
+    builder.Host.UseSerilog();
 
     var app = builder.Build();
     app.Map("/main", applicationBuilder =>
@@ -118,7 +119,10 @@ try
     });
 
     app.Run();
-
+}
+catch (HostAbortedException exception)
+{
+    Log.Warning(exception, "Executing migrations? All good.");
 }
 catch (Exception exception)
 {

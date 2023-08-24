@@ -1,0 +1,22 @@
+.center {
+    margin-top: 8%;
+    width: 90%;
+    margin-right: 5%; 
+    margin-left: 5%; 
+}
+
+a{
+    color: white !important;
+}
+
+a:hover{
+    color: #1976d2 !important;
+}
+
+.right {
+    float: right;
+}
+
+.row{
+    display: flow-root;
+}

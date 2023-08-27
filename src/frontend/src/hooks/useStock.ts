@@ -1,17 +1,48 @@
-import { useQuery } from "@tanstack/react-query";
+import { UseQueryResult, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { StockEntity } from "../types/Stock.type";
+import { http } from "../utils/HttpClient";
 
-const getStock = (): StockEntity[] => {
-    return [
-        { id: 1, product: {id: 1, name: 'Product 01'}, quantity: 35 },
-        { id: 2, product: {id: 2, name: 'Product 02'}, quantity: 36 },
-        { id: 3, product: {id: 3, name: 'Product 03'}, quantity: 37 },
-        { id: 4, product: {id: 4, name: 'Product 04'}, quantity: 38 },
-    ] as StockEntity[];
+export const getStocks = async () => {
+  const { data } = await http.get<StockEntity[]>("/main/api/stock");
+  return data;
 };
 
-export const useStock = () =>
-    useQuery({
-        queryKey: ["stock"],
-        queryFn: () => getStock(),
-    });
+export const useStock = (): UseQueryResult<StockEntity[]> =>
+  useQuery({
+    queryKey: ["stock"],
+    queryFn: getStocks,
+  });
+
+export type StockRequest = {
+  quantity: number;
+};
+
+export const useCreateStock = () =>
+  useMutation({
+    mutationKey: ["createStock"],
+    mutationFn: (variables: { id: number; body: StockRequest }) =>
+      http.post(`/main/api/product/${variables.id}/stock`, variables.body),
+    onSuccess: () => {
+    },
+    onError: () => {},
+  });
+
+export const useUpdateStock = () =>
+  useMutation({
+    mutationKey: ["updateStock"],
+    mutationFn: (variables: { id: number; body: StockRequest }) =>
+      http.put(`/main/api/product/${variables.id}/stock`, variables.body),
+    onSuccess: () => {
+    },
+    onError: () => {},
+  });
+
+export const useDeleteStock = () =>
+  useMutation({
+    mutationKey: ["deleteStock"],
+    mutationFn: (variables: { id: number }) =>
+      http.delete(`/main/api/product/${variables.id}/stock`),
+    onSuccess: () => {
+    },
+    onError: () => {},
+  });

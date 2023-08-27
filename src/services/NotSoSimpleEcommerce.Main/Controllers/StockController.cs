@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NotSoSimpleEcommerce.Main.Domain.Mappings;
 using NotSoSimpleEcommerce.Main.Domain.Repositories.Contracts;
 using NotSoSimpleEcommerce.Shared.Models;
@@ -23,12 +24,14 @@ namespace NotSoSimpleEcommerce.Main.Controllers
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken)
         {
-            var stocks = await _stockReadRepository.GetAllAsync(cancellationToken);
-            var stockArray = stocks as StockEntity[] ?? stocks.ToArray();
-            if (!stockArray.Any())
+            var stocks = await _stockReadRepository.GetAll()
+                .Include(stock=> stock.Product)
+                .ToListAsync(cancellationToken);
+            
+            if (!stocks.Any())
                 return NoContent();
 
-            return Ok(stockArray.MapToResponse());
+            return Ok(stocks.MapToResponse());
         }
     }
 }

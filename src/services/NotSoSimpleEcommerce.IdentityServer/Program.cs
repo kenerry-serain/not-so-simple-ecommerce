@@ -43,7 +43,6 @@ try
         applicationBuilder.UseMiddleware<GlobalErrorHandlerMiddleware>();
         applicationBuilder.UseAuthentication();
         applicationBuilder.UseAuthorization();
-
         applicationBuilder.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();

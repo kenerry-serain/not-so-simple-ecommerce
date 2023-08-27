@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using NotSoSimpleEcommerce.Main.Domain.Commands;
-using NotSoSimpleEcommerce.Main.Domain.InOut.Responses;
 using NotSoSimpleEcommerce.Main.Domain.Mappings;
 using NotSoSimpleEcommerce.Main.Domain.Repositories.Contracts;
 using NotSoSimpleEcommerce.Repositories.Contracts;
+using NotSoSimpleEcommerce.Shared.InOut.Responses;
 using NotSoSimpleEcommerce.Shared.Models;
 
 namespace NotSoSimpleEcommerce.Main.Domain.CommandHandlers
@@ -29,12 +29,17 @@ namespace NotSoSimpleEcommerce.Main.Domain.CommandHandlers
             if (oldStock is null)
                 throw new KeyNotFoundException("The specified product doesn't have stock.");
 
-            var newStock = request
+            var stockToUpdate = request
                 .WithId(oldStock.Id)
                 .MapToEntity();
 
-            await _updateEntityRepository.ExecuteAsync(newStock, cancellationToken);
-            return newStock.MapToResponse();
+            await _updateEntityRepository.ExecuteAsync(stockToUpdate, cancellationToken);
+            
+            var updatedStock = await _readRepository.GetByProductIdAsync(request.ProductId, cancellationToken);
+            if (updatedStock == null)
+                throw new ArgumentNullException();
+            
+            return updatedStock.MapToResponse();
         }
     }
 }

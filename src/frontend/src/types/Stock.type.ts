@@ -1,5 +1,6 @@
 export interface StockEntity {
     id: number;
+    productId: number;
     product: ProductEntity;
     quantity: number;
 }
@@ -13,6 +14,7 @@ export interface ProductEntity {
 
 export interface OrderEntity {
     id: number;
+    productId: number;
     product: ProductEntity;
     quantity: number;
     statusId: number;

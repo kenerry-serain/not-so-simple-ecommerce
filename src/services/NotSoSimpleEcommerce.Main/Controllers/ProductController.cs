@@ -81,10 +81,28 @@ namespace NotSoSimpleEcommerce.Main.Controllers
 
         [HttpPost("{id:int}/stock")]
         [ProducesResponseType((int)HttpStatusCode.Created)]
-        public async Task<IActionResult> AddAsync([FromRoute] int id, [FromBody] StockRequest stock, CancellationToken cancellationToken)
+        public async Task<IActionResult> AddAsync
+        (
+            [FromRoute] int id, 
+            [FromBody] StockRequest stock, 
+            CancellationToken cancellationToken
+        )
         {
             var createdStock = await _mediator.Send(stock.MapToRegisterProductStockCommand(id), cancellationToken);
             return Created(Request.GetDisplayUrl(), createdStock);
+        }
+        
+        
+        [HttpDelete("{id:int}/stock")]
+        [ProducesResponseType((int)HttpStatusCode.Created)]
+        public async Task<IActionResult> RemoveAsync
+        (
+            [FromRoute] int id, 
+            CancellationToken cancellationToken
+        )
+        {
+            await _mediator.Send(new DeleteProductStockCommand(id), cancellationToken);
+            return Ok();
         }
 
         [HttpPut("{id:int}")]

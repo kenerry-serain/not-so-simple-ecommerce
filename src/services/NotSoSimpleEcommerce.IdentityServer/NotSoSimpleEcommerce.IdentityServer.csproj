@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
       <UserSecretsId>e71bb9c8-7ded-42c6-bd2d-b45806e4d5da</UserSecretsId>
+      <DockerfileContext>..\..\..</DockerfileContext>
   </PropertyGroup>
 
     <ItemGroup>
@@ -16,6 +17,7 @@
 
     <ItemGroup>
       <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.5" />
+      <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
       <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.10.0" />
       <PackageReference Include="Autofac" Version="7.0.1" />
       <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   MaterialReactTable,
   type MaterialReactTableProps,
@@ -14,33 +14,52 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  MenuItem,
   Stack,
   TextField,
   Tooltip,
 } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
-import { data, states } from './makeData';
 import { ProductEntity } from '../../types/Stock.type';
+import { getProducts, useCreateProduct, useDeleteProduct, useProduct, useUpdateProduct } from '../../hooks/useProduct';
+import { useQueryClient } from '@tanstack/react-query';
 
 const Product = () => {
+  const {data: products=[]} = useProduct();
+  const [changed, setChanged] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [tableData, setTableData] = useState<ProductEntity[]>(() => data);
+  const [tableData, setTableData] = useState<ProductEntity[]>(() => products);
   const [validationErrors, setValidationErrors] = useState<{
     [cellId: string]: string;
   }>({});
+  const createProduct = useCreateProduct();
+  const updateProduct = useUpdateProduct();
+  const deleteProduct = useDeleteProduct();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    setTableData(products);
+  }, [products]);
+  
+  useEffect(() => {
+    getProducts()
+    .then((response) => {
+      queryClient.invalidateQueries({ queryKey: ['product'] })
+      setTableData(response ?? []);
+    });
+  }, [changed]);
+  
 
   const handleCreateNewRow = (values: ProductEntity) => {
-    tableData.push(values);
-    setTableData([...tableData]);
+    createProduct.mutate(values);
+    setChanged (true);
   };
 
   const handleSaveRowEdits: MaterialReactTableProps<ProductEntity>['onEditingRowSave'] =
     async ({ exitEditingMode, row, values }) => {
       if (!Object.keys(validationErrors).length) {
-        tableData[row.index] = values;
-        //send/receive api updates here, then refetch or update local table data for re-render
-        setTableData([...tableData]);
+        const currentProduct = products.filter((product) => product.id === +values.id)[0];
+        updateProduct.mutate({id: currentProduct.id, body: {name: values.name, price: values.price}});
+        setChanged (true);
         exitEditingMode(); //required to exit editing mode and close modal
       }
     };
@@ -52,48 +71,14 @@ const Product = () => {
   const handleDeleteRow = useCallback(
     (row: MRT_Row<ProductEntity>) => {
       if (
-        !confirm(`Are you sure you want to delete ${row.getValue('firstName')}`)
+        !confirm(`Você deseja deletar o produto ${row.getValue('name')}?`)
       ) {
         return;
       }
       //send api delete request here, then refetch or update local table data for re-render
-      tableData.splice(row.index, 1);
-      setTableData([...tableData]);
+      deleteProduct.mutate({id: row.getValue('id')});
     },
     [tableData],
-  );
-
-  const getCommonEditTextFieldProps = useCallback(
-    (
-      cell: MRT_Cell<ProductEntity>,
-    ): MRT_ColumnDef<ProductEntity>['muiTableBodyCellEditTextFieldProps'] => {
-      return {
-        error: !!validationErrors[cell.id],
-        helperText: validationErrors[cell.id],
-        onBlur: (event) => {
-          const isValid =
-            cell.column.id === 'email'
-              ? validateEmail(event.target.value)
-              : cell.column.id === 'price'
-              ? validatePrice(+event.target.value)
-              : validateRequired(event.target.value);
-          if (!isValid) {
-            //set validation error for cell if invalid
-            setValidationErrors({
-              ...validationErrors,
-              [cell.id]: `${cell.column.columnDef.header} is required`,
-            });
-          } else {
-            //remove validation error for cell if valid
-            delete validationErrors[cell.id];
-            setValidationErrors({
-              ...validationErrors,
-            });
-          }
-        },
-      };
-    },
-    [validationErrors],
   );
 
   const columns = useMemo<MRT_ColumnDef<ProductEntity>[]>(
@@ -114,9 +99,6 @@ const Product = () => {
         enableColumnOrdering: false,
         enableSorting: false,
         size: 80,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-            ...getCommonEditTextFieldProps(cell),
-          }),
       },
       {
         accessorKey: 'price',
@@ -124,59 +106,10 @@ const Product = () => {
         meta: {type: 'number'}as any,
         enableColumnOrdering: false,
         enableSorting: false,
-        size: 80,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-            ...getCommonEditTextFieldProps(cell),
-            type: 'number'
-          }),
-      },
-    //   {
-    //     accessorKey: '',
-    //     header: 'First Name',
-    //     size: 140,
-        // muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-        //   ...getCommonEditTextFieldProps(cell),
-        // }),
-    //   },
-    //   {
-    //     accessorKey: 'lastName',
-    //     header: 'Last Name',
-    //     size: 140,
-    //     muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-    //       ...getCommonEditTextFieldProps(cell),
-    //     }),
-    //   },
-    //   {
-    //     accessorKey: 'email',
-    //     header: 'Email',
-    //     muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-    //       ...getCommonEditTextFieldProps(cell),
-    //       type: 'email',
-    //     }),
-    //   },
-    //   {
-    //     accessorKey: 'age',
-    //     header: 'Age',
-    //     size: 80,
-    //     muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-    //       ...getCommonEditTextFieldProps(cell),
-    //       type: 'number',
-    //     }),
-    //   },
-    //   {
-    //     accessorKey: 'state',
-    //     header: 'State',
-    //     muiTableBodyCellEditTextFieldProps: {
-    //       select: true, //change to select for a dropdown
-    //       children: states.map((state) => (
-    //         <MenuItem key={state} value={state}>
-    //           {state}
-    //         </MenuItem>
-    //       )),
-    //     },
-    //   },
+        size: 80
+      }
     ],
-    [getCommonEditTextFieldProps],
+    [],
   );
 
   return (
@@ -220,7 +153,7 @@ const Product = () => {
           </Button>
         )}
       />
-      <CreateNewAccountModal
+      <CreateProductModal
         columns={columns}
         open={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
@@ -238,7 +171,7 @@ interface CreateModalProps {
 }
 
 //example of creating a mui dialog modal for creating new rows
-export const CreateNewAccountModal = ({
+export const CreateProductModal = ({
   open,
   columns,
   onClose,
@@ -294,15 +227,5 @@ export const CreateNewAccountModal = ({
     </Dialog>
   );
 };
-
-const validateRequired = (value: string) => !!value.length;
-const validateEmail = (email: string) =>
-  !!email.length &&
-  email
-    .toLowerCase()
-    .match(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-    );
-const validatePrice = (price: number) => price >= 18 && price <= 50;
 
 export default Product;

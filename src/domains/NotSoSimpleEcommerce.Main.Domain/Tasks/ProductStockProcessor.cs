@@ -32,14 +32,14 @@ public sealed class ProductStockProcessor: IMessageProcessor
         if (!orderApiResponse.IsSuccessStatusCode)
             throw new KeyNotFoundException("Sorry, something went wrong while consulting the order.");
         
-        var stockApiResponse = await _mainApiClient.GetStockByProductIdAsync(orderResponse.ProductId);
+        var stockApiResponse = await _mainApiClient.GetStockByProductIdAsync(orderResponse.Product.Id);
         var stockResponse = stockApiResponse.Content?? throw new ArgumentNullException();
         if (!stockApiResponse.IsSuccessStatusCode)
             throw new KeyNotFoundException("Sorry, something went wrong while consulting the product stock.");
 
-        var response = await _mainApiClient.UpdateProductStockAsync(orderResponse.ProductId, new
+        var response = await _mainApiClient.UpdateProductStockAsync(orderResponse.Product.Id, new
         {
-            orderResponse.ProductId,
+            orderResponse.Product.Id,
             Quantity = stockResponse.Quantity - orderResponse.Quantity
         });
     

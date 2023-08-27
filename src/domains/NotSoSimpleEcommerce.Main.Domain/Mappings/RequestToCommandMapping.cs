@@ -34,7 +34,6 @@ namespace NotSoSimpleEcommerce.Main.Domain.Mappings
 
         public static UpdateProductCommand MapToUpdateCommand(this ProductRequest product, int id)
         {
-            //TODO make all like below
             return new UpdateProductCommand
             {
                 Id = id,

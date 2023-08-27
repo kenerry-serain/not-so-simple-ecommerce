@@ -30,7 +30,7 @@ namespace NotSoSimpleEcommerce.Main.Modules
                 dbContext.Database.Migrate();
                 return dbContext;
             })
-            .SingleInstance();
+            .InstancePerLifetimeScope();
 
             builder
             .RegisterGeneric(typeof(CreateEntityRepository<>))

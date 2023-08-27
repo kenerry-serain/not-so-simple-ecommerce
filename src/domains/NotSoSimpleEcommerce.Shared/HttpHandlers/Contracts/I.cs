@@ -5,7 +5,7 @@ namespace NotSoSimpleEcommerce.Shared.HttpHandlers.Contracts;
 
 public interface IOrderApi
 {
-    [Get("/order/api/shopping/order/{id}")]
+    [Get("/order/api/request/{id}")]
     [Headers("Authorization: Bearer")]
     Task<ApiResponse<OrderResponse>> GetOrderByIdAsync(int id);
 }

@@ -7,10 +7,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["NotSoSimpleEcommerce.HealthChecker/NotSoSimpleEcommerce.HealthChecker.csproj", "NotSoSimpleEcommerce.HealthChecker/"]
-RUN dotnet restore "NotSoSimpleEcommerce.HealthChecker/NotSoSimpleEcommerce.HealthChecker.csproj"
+COPY ["src/services/NotSoSimpleEcommerce.HealthChecker/NotSoSimpleEcommerce.HealthChecker.csproj", "src/services/NotSoSimpleEcommerce.HealthChecker/"]
+RUN dotnet restore "src/services/NotSoSimpleEcommerce.HealthChecker/NotSoSimpleEcommerce.HealthChecker.csproj"
 COPY . .
-WORKDIR "/src/NotSoSimpleEcommerce.HealthChecker"
+WORKDIR "/src/src/services/NotSoSimpleEcommerce.HealthChecker"
 RUN dotnet build "NotSoSimpleEcommerce.HealthChecker.csproj" -c Release -o /app/build
 
 FROM build AS publish

@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using NotSoSimpleEcommerce.Main.Domain.InOut.Responses;
+using NotSoSimpleEcommerce.Shared.InOut.Responses;
 
 namespace NotSoSimpleEcommerce.Main.Domain.Commands
 {

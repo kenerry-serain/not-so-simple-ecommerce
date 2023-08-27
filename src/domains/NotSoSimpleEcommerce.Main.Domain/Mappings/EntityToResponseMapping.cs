@@ -1,4 +1,4 @@
-﻿using NotSoSimpleEcommerce.Main.Domain.InOut.Responses;
+﻿using NotSoSimpleEcommerce.Shared.InOut.Responses;
 using NotSoSimpleEcommerce.Shared.Models;
 
 namespace NotSoSimpleEcommerce.Main.Domain.Mappings
@@ -7,7 +7,7 @@ namespace NotSoSimpleEcommerce.Main.Domain.Mappings
     {
         public static StockResponse MapToResponse(this StockEntity stock)
         {
-            return new StockResponse(stock.Id, stock.ProductId, stock.Quantity);
+            return new StockResponse(stock.Id, stock.Product.MapToResponse(), stock.Quantity);
         }
 
         public static ProductResponse MapToResponse(this ProductEntity product)

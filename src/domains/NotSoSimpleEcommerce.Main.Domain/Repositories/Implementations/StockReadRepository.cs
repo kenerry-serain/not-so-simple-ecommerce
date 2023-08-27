@@ -19,6 +19,7 @@ public sealed class StockReadRepository: ReadEntityRepository<StockEntity>, ISto
     {
         return await _context.Stock
             .AsNoTracking()
+            .Include(stock => stock.Product)
             .FirstOrDefaultAsync(stock => stock.ProductId == productId, cancellationToken);
     }
 }

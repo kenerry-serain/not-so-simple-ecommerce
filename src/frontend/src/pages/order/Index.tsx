@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   MaterialReactTable,
   type MaterialReactTableProps,
@@ -14,33 +14,54 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  InputLabel,
   MenuItem,
+  Select,
   Stack,
   TextField,
   Tooltip,
 } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
-import { data, states } from './makeData';
 import { OrderEntity } from '../../types/Stock.type';
-
+import { getOrders, useCreateOrder, useDeleteOrder, useOrder, useUpdateOrder } from '../../hooks/useOrder';
+import { useQueryClient } from '@tanstack/react-query';
+import { useProduct } from '../../hooks/useProduct';
 const Order = () => {
+  const {data: orders=[]} = useOrder();
+  const [changed, setChanged] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [tableData, setTableData] = useState<OrderEntity[]>(() => data);
+  const [tableData, setTableData] = useState<OrderEntity[]>(() => orders);
   const [validationErrors, setValidationErrors] = useState<{
     [cellId: string]: string;
   }>({});
+  const createOrder = useCreateOrder();
+  const updateOrder = useUpdateOrder();
+  const deleteOrder = useDeleteOrder();
+  const queryClient = useQueryClient();
 
+  useEffect(() => {
+    setTableData(orders);
+  }, [orders]);
+  
+  useEffect(() => {
+    getOrders()
+    .then((response) => {
+      queryClient.invalidateQueries({ queryKey: ['order'] })
+      setTableData(response ?? []);
+    });
+  }, [changed]);
+  
   const handleCreateNewRow = (values: OrderEntity) => {
-    tableData.push(values);
-    setTableData([...tableData]);
+    createOrder.mutate({productId: values.productId, quantity: values.quantity});
+    setChanged (true);
   };
 
   const handleSaveRowEdits: MaterialReactTableProps<OrderEntity>['onEditingRowSave'] =
     async ({ exitEditingMode, row, values }) => {
       if (!Object.keys(validationErrors).length) {
-        tableData[row.index] = values;
-        //send/receive api updates here, then refetch or update local table data for re-render
-        setTableData([...tableData]);
+        const currentOrder = orders.filter((order) => order.id === +values.id)[0];
+        updateOrder.mutate({id: currentOrder.id, body: {productId: currentOrder.product.id, quantity: values.quantity}});
+        setChanged (true);
         exitEditingMode(); //required to exit editing mode and close modal
       }
     };
@@ -52,48 +73,14 @@ const Order = () => {
   const handleDeleteRow = useCallback(
     (row: MRT_Row<OrderEntity>) => {
       if (
-        !confirm(`Are you sure you want to delete ${row.getValue('firstName')}`)
+        !confirm(`Você deseja deletar a ordem ${row.getValue('firstName')}?`)
       ) {
         return;
       }
-      //send api delete request here, then refetch or update local table data for re-render
-      tableData.splice(row.index, 1);
-      setTableData([...tableData]);
+      deleteOrder.mutate({id: row.getValue('id')});
+      setChanged (true);
     },
     [tableData],
-  );
-
-  const getCommonEditTextFieldProps = useCallback(
-    (
-      cell: MRT_Cell<OrderEntity>,
-    ): MRT_ColumnDef<OrderEntity>['muiTableBodyCellEditTextFieldProps'] => {
-      return {
-        error: !!validationErrors[cell.id],
-        helperText: validationErrors[cell.id],
-        onBlur: (event) => {
-          const isValid =
-            cell.column.id === 'email'
-              ? validateEmail(event.target.value)
-              : cell.column.id === 'price'
-              ? validatePrice(+event.target.value)
-              : validateRequired(event.target.value);
-          if (!isValid) {
-            //set validation error for cell if invalid
-            setValidationErrors({
-              ...validationErrors,
-              [cell.id]: `${cell.column.columnDef.header} is required`,
-            });
-          } else {
-            //remove validation error for cell if valid
-            delete validationErrors[cell.id];
-            setValidationErrors({
-              ...validationErrors,
-            });
-          }
-        },
-      };
-    },
-    [validationErrors],
   );
 
   const columns = useMemo<MRT_ColumnDef<OrderEntity>[]>(
@@ -112,11 +99,9 @@ const Order = () => {
         header: 'Produto',
         meta: {type: 'text'}as any,
         enableColumnOrdering: false,
+        enableEditing: false, //disable editing on this column
         enableSorting: false,
-        size: 80,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-            ...getCommonEditTextFieldProps(cell),
-          }),
+        size: 80
       },
       {
         accessorKey: 'quantity',
@@ -124,70 +109,19 @@ const Order = () => {
         meta: {type: 'number'}as any,
         enableColumnOrdering: false,
         enableSorting: false,
-        size: 80,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-            ...getCommonEditTextFieldProps(cell),
-            type: 'number'
-          }),
+        size: 80
       },
       {
         accessorKey: 'status',
         header: 'Status',
+        enableEditing: false, //disable editing on this column
         meta: {type: 'text'}as any,
         enableColumnOrdering: false,
         enableSorting: false,
-        size: 80,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-            ...getCommonEditTextFieldProps(cell),
-          }),
+        size: 80
       },
-    //   {
-    //     accessorKey: '',
-    //     header: 'First Name',
-    //     size: 140,
-        // muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-        //   ...getCommonEditTextFieldProps(cell),
-        // }),
-    //   },
-    //   {
-    //     accessorKey: 'lastName',
-    //     header: 'Last Name',
-    //     size: 140,
-    //     muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-    //       ...getCommonEditTextFieldProps(cell),
-    //     }),
-    //   },
-    //   {
-    //     accessorKey: 'email',
-    //     header: 'Email',
-    //     muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-    //       ...getCommonEditTextFieldProps(cell),
-    //       type: 'email',
-    //     }),
-    //   },
-    //   {
-    //     accessorKey: 'age',
-    //     header: 'Age',
-    //     size: 80,
-    //     muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-    //       ...getCommonEditTextFieldProps(cell),
-    //       type: 'number',
-    //     }),
-    //   },
-    //   {
-    //     accessorKey: 'state',
-    //     header: 'State',
-    //     muiTableBodyCellEditTextFieldProps: {
-    //       select: true, //change to select for a dropdown
-    //       children: states.map((state) => (
-    //         <MenuItem key={state} value={state}>
-    //           {state}
-    //         </MenuItem>
-    //       )),
-    //     },
-    //   },
     ],
-    [getCommonEditTextFieldProps],
+    [],
   );
 
   return (
@@ -231,7 +165,7 @@ const Order = () => {
           </Button>
         )}
       />
-      <CreateNewAccountModal
+      <CreateOrderModal
         columns={columns}
         open={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
@@ -249,7 +183,7 @@ interface CreateModalProps {
 }
 
 //example of creating a mui dialog modal for creating new rows
-export const CreateNewAccountModal = ({
+export const CreateOrderModal = ({
   open,
   columns,
   onClose,
@@ -268,6 +202,8 @@ export const CreateNewAccountModal = ({
     onClose();
   };
 
+  const {data: products=[]} = useProduct();
+
   return (
     <Dialog open={open}>
       <DialogTitle textAlign="center">Criar Ordem</DialogTitle>
@@ -280,40 +216,50 @@ export const CreateNewAccountModal = ({
               gap: '1.5rem',
             }}
           >
-            { columns.filter(column => column.enableEditing != false).map((column) => (
+              <InputLabel id="demo-simple-select-helper-label">Produto</InputLabel>
+              <Select
+                margin="dense"
+                variant='standard'
+                labelId="demo-simple-select-helper-label"
+                id="demo-simple-select-helper"
+                value={values.productId || ''}
+                key="productId"
+                name="productId"
+                onChange={(e) =>
+                  setValues({ ...values, [e.target.name]: e.target.value })
+                }
+              >
+                  {products?products.map((product) => (
+                    <MenuItem
+                      key={product.id}
+                      value={product.id}
+                    >
+                      {product.name}
+                    </MenuItem>
+                  )):[]}
+              </Select>
               <TextField
-              margin="dense"
-              variant='standard'
-                key={column.accessorKey}
-                label={column.header}
-                name={column.accessorKey}
-                type={(column.meta as any).type}
+                margin="dense"
+                variant='standard'
+                key="quantity"
+                label="Quantity"
+                name="quantity"
+                type="number"
                 onChange={(e) =>
                   setValues({ ...values, [e.target.name]: e.target.value })
                 }
               />
-            ))}
           </Stack>
         </form>
       </DialogContent>
       <DialogActions sx={{ p: '1.25rem' }}>
         <Button onClick={onClose}>Cancel</Button>
-        <Button color="secondary" onClick={handleSubmit} variant="contained">
+        <Button onClick={handleSubmit} variant="contained">
           Criar Ordem
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
-
-const validateRequired = (value: string) => !!value.length;
-const validateEmail = (email: string) =>
-  !!email.length &&
-  email
-    .toLowerCase()
-    .match(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-    );
-const validatePrice = (price: number) => price >= 18 && price <= 50;
 
 export default Order;

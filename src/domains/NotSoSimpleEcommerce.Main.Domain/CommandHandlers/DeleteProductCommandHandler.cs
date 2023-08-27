@@ -23,7 +23,6 @@ namespace NotSoSimpleEcommerce.Main.Domain.CommandHandlers
 
         public async Task Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
-            //TODO Remove validation from controller
             var entity = await _readRepository.GetByIdAsync(request.Id, cancellationToken);
             if (entity is not null)
                 await _deleteEntityRepository.ExecuteAsync(entity, cancellationToken);

@@ -10,11 +10,18 @@ namespace NotSoSimpleEcommerce.Order.Domain.Mappings
             return new CreateOrderCommand
             {
                 ProductId = order.ProductId,
-                Quantity = order.Quantity,
-                //TODO Logged user
-                BoughtBy = order.BoughtBy
+                Quantity = order.Quantity
             };
         }
-
+        
+        public static UpdateOrderCommand MapToUpdateCommand(this OrderRequest product, int id)
+        {
+            return new UpdateOrderCommand
+            {
+                Id = id,
+                ProductId = product.ProductId,
+                Quantity = product.Quantity
+            };
+        }
     }
 }

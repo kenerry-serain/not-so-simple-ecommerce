@@ -98,6 +98,8 @@ try
         };
     });
     builder.Services.AddAuthorization();
+    builder.Services.AddHttpContextAccessor();
+
     builder.Host.UseSerilog();
 
     var app = builder.Build();
@@ -108,7 +110,8 @@ try
         applicationBuilder.UseSwaggerUI();
         applicationBuilder.UseRouting();
         applicationBuilder.UseMiddleware<GlobalErrorHandlerMiddleware>();
-
+        applicationBuilder.UseAuthentication();
+        applicationBuilder.UseAuthorization();
         applicationBuilder.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();

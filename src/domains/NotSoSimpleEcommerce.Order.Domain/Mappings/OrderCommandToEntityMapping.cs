@@ -16,5 +16,16 @@ namespace NotSoSimpleEcommerce.Order.Domain.Mappings
                 statusId: OrderStatus.Created
             );
         }
+        
+        public static OrderEntity MapToEntity(this UpdateOrderCommand order)
+        {
+            return new OrderEntity
+            (
+                productId: order.ProductId,
+                quantity: order.Quantity,
+                boughtBy:order.BoughtBy,
+                statusId: OrderStatus.Created
+            );
+        }
     }
 }

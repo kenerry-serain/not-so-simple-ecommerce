@@ -2,6 +2,8 @@
 using Autofac.Core;
 using Microsoft.EntityFrameworkCore;
 using NotSoSimpleEcommerce.Order.Domain.Repositories.Contexts;
+using NotSoSimpleEcommerce.Order.Domain.Repositories.Contracts;
+using NotSoSimpleEcommerce.Order.Domain.Repositories.Implementations;
 using NotSoSimpleEcommerce.Repositories.Contracts;
 using NotSoSimpleEcommerce.Repositories.Implementations;
 using NotSoSimpleEcommerce.Shared.HttpHandlers.Contracts;
@@ -47,6 +49,10 @@ namespace NotSoSimpleEcommerce.Order.Modules
                         (i, _) => i.ParameterType == typeof(DbContext),
                         (_, c) => c.Resolve<OrderContext>())
                 ).InstancePerLifetimeScope();
+            
+            builder
+                .RegisterType<OrderReadRepository>()
+                .As<IOrderReadRepository>();
 
             var hostUrl = _configuration.GetValue<string>("BaseAddress:Identity")!;
             var identityServerApi = RestService.For<IIdentityServerApi>(hostUrl);

@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using NotSoSimpleEcommerce.Main.Domain.Commands;
-using NotSoSimpleEcommerce.Main.Domain.InOut.Responses;
 using NotSoSimpleEcommerce.Main.Domain.Mappings;
 using NotSoSimpleEcommerce.Main.Domain.Repositories.Contracts;
 using NotSoSimpleEcommerce.Repositories.Contracts;
+using NotSoSimpleEcommerce.Shared.InOut.Responses;
 using NotSoSimpleEcommerce.Shared.Models;
 
 namespace NotSoSimpleEcommerce.Main.Domain.CommandHandlers
@@ -30,9 +30,14 @@ namespace NotSoSimpleEcommerce.Main.Domain.CommandHandlers
                 throw new ArgumentException("The specified product already has a stock registered, please use" +
                                                "the UPDATE method.");
             
-            var stockEntity = request.MapToEntity();
-            await _createEntityRepository.ExecuteAsync(stockEntity, cancellationToken);
-            return stockEntity.MapToResponse();
+            var stockToCreate = request.MapToEntity();
+            await _createEntityRepository.ExecuteAsync(stockToCreate, cancellationToken);
+            
+            var createdStock = await _stockReadRepository.GetByProductIdAsync(request.ProductId, cancellationToken);
+            if (createdStock == null)
+                throw new ArgumentNullException();
+            
+            return createdStock.MapToResponse();
         }
     }
 }

@@ -8,7 +8,10 @@
 #Change name
 #!/bin/bash
 set -e
-
+# openssl genrsa -out cert-key.pem 4096
+# openssl req -new -x509 -sha256 -days 365 -key cert-key.pem -out ca.pem -subj "/CN=MasterDevOps"
+# openssl req -new -sha256 -subj "/CN=MasterDevOps" -key cert-key.pem -out cert.csr
+# openssl x509 -req -sha256 -days 365 -in cert.csr -CA ca.pem -CAkey cert-key.pem -CAcreateserial -extfile "service.ext" -out cert.pem
 openssl genrsa \
     -des3 \
     -out "../certificates/rootCA.key" \
@@ -48,5 +51,17 @@ openssl pkcs12 \
     -inkey "../certificates/service.key" \
     -in "../certificates/service.crt" \
     -export \
-    -out "../certificates/service.pfx" \
+    -out "../certificates/serviceApis.pfx" \
     -passout pass:"Define-Me0!"
+
+openssl x509 \
+    -req \
+    -in "../certificates/service.csr" \
+    -CA "../certificates/rootCA.crt" \
+    -CAkey "../certificates/rootCA.key" \
+    -passin pass:"Define-Me0!" \
+    -sha256 \
+    -extfile "../certificates/service.ext" \
+    -CAcreateserial \
+    -out "../certificates/service.crt" \
+    -days 365

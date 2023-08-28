@@ -7,7 +7,15 @@ namespace NotSoSimpleEcommerce.Order.Domain.Mappings
     {
         public static OrderResponse MapToResponse(this OrderEntity order)
         {
-            return new OrderResponse(order.Id, order.Product.MapToResponse(), order.Quantity, order.BoughtBy, order.StatusId);
+            return new OrderResponse
+            (
+                order.Id, 
+                order.Product.MapToResponse(), 
+                order.Quantity, 
+                order.BoughtBy, 
+                order.StatusId,
+                Enum.GetName(order.StatusId)
+            );
         }
         
         public static ProductResponse MapToResponse(this ProductEntity product)

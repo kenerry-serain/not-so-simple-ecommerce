@@ -39,6 +39,7 @@ openssl x509 \
     -CAkey "../certificates/rootCA.key" \
     -passin pass:"Define-Me0!" \
     -sha256 \
+    -extfile "../certificates/service.ext" \
     -CAcreateserial \
     -out "../certificates/service.crt" \
     -days 365

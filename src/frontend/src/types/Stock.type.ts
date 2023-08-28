@@ -5,6 +5,16 @@ export interface StockEntity {
     quantity: number;
 }
 
+export interface ReportEntity {
+    id: number;
+    orderQuantity: number;
+    productQuantity: number;
+    averagePrice: number;
+    total: number;
+    productId: number;
+    product: ProductEntity;
+}
+
 export interface ProductEntity {
     id: number;
     name: string;
@@ -19,6 +29,7 @@ export interface OrderEntity {
     quantity: number;
     statusId: number;
     status: string;
+    boughtBy: string;
 }
 
 

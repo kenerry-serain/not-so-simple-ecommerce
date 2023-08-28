@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+
 import {
   MaterialReactTable,
   type MaterialReactTableProps,
-  type MRT_Cell,
   type MRT_ColumnDef,
   type MRT_Row,
 } from 'material-react-table';
@@ -88,7 +89,6 @@ const Order = () => {
       {
         accessorKey: 'id',
         header: 'Id',
-        meta: {type: 'number'} as any,
         enableColumnOrdering: false,
         enableEditing: false, //disable editing on this column
         enableSorting: false,
@@ -97,7 +97,6 @@ const Order = () => {
       {
         accessorKey: 'product.name',
         header: 'Produto',
-        meta: {type: 'text'}as any,
         enableColumnOrdering: false,
         enableEditing: false, //disable editing on this column
         enableSorting: false,
@@ -106,7 +105,6 @@ const Order = () => {
       {
         accessorKey: 'quantity',
         header: 'Quantidade',
-        meta: {type: 'number'}as any,
         enableColumnOrdering: false,
         enableSorting: false,
         size: 80
@@ -115,11 +113,18 @@ const Order = () => {
         accessorKey: 'status',
         header: 'Status',
         enableEditing: false, //disable editing on this column
-        meta: {type: 'text'}as any,
         enableColumnOrdering: false,
         enableSorting: false,
         size: 80
       },
+      {
+        accessorKey: 'boughtBy',
+        header: 'Comprador',
+        enableEditing: false, //disable editing on this column
+        enableColumnOrdering: false,
+        enableSorting: false,
+        size: 80
+      }
     ],
     [],
   );
@@ -157,12 +162,12 @@ const Order = () => {
           </Box>
         )}
         renderTopToolbarCustomActions={() => (
-          <Button
-            onClick={() => setCreateModalOpen(true)}
-            variant="contained"
-          >
-            Criar Ordem
-          </Button>
+        <Button
+          onClick={() => setCreateModalOpen(true)}
+          startIcon={<AddOutlinedIcon />}
+        >
+          Ordem
+        </Button>
         )}
       />
       <CreateOrderModal

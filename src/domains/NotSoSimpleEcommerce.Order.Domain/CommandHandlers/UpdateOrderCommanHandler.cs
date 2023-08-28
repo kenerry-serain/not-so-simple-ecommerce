@@ -38,12 +38,13 @@ public sealed class UpdateOrderCommanHandler: IRequestHandler<UpdateOrderCommand
         if (stockResponse.Quantity < request.Quantity)
             throw new Exception("There is not enough stock for the selected Product.");
         
-        await _updateEntityRepository.ExecuteAsync(requestedOrderEntity, cancellationToken);
-            
-        var updatedOrderEntity = await _readRepository.GetByProductIdAsync(request.ProductId, cancellationToken);
-        if (updatedOrderEntity == null)
+        var order =  await _readRepository.GetByProductIdAsync(request.ProductId, cancellationToken);
+        if (order == null)
             throw new ArgumentNullException();
-            
-        return updatedOrderEntity.MapToResponse();
+
+        order.Quantity = requestedOrderEntity.Quantity;
+        
+        await _updateEntityRepository.ExecuteAsync(order, cancellationToken);
+        return order.MapToResponse();
     }
 }

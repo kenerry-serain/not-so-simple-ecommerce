@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import {
   MaterialReactTable,
   type MaterialReactTableProps,
@@ -153,11 +154,11 @@ const Stock = () => {
         )}
         renderTopToolbarCustomActions={() => (
           <Button
-            onClick={() => setCreateModalOpen(true)}
-            variant="contained"
+          onClick={() => setCreateModalOpen(true)}
+          startIcon={<AddOutlinedIcon />}
           >
-            Criar Estoque
-          </Button>
+          Estoque
+        </Button>
         )}
       />
       <CreateStockModal

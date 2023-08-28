@@ -10,7 +10,7 @@ namespace NotSoSimpleEcommerce.Main.Domain.Mappings
             return new StockEntity
             {
                 Quantity = stock.Quantity,
-                ProductId = stock.ProductId,
+                ProductId = stock.ProductId
             };
         }
 

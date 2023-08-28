@@ -1,31 +1,15 @@
-import { ProductEntity, StockEntity } from '../../types/Stock.type';
+import { ProductEntity, ReportEntity, StockEntity } from '../../types/Stock.type';
 
-export const data: StockEntity[] = [
+export const data: ReportEntity[] = [
   {
     id: 1,
     product: {id: 1, name: 'Product 01', price: 19.9},
-    quantity: 10,
-  },
-  {
-    id: 2,
-    product: {id: 1, name: 'Product 02', price: 19.9},
-    quantity: 10,
-  },
-  {
-    id: 3,
-    product: {id: 1, name: 'Product 03', price: 19.9},
-    quantity: 10,
-  },
-  {
-    id: 4,
-    product: {id: 1, name: 'Product 04', price: 19.9},
-    quantity: 10,
-  },
-  {
-    id: 5,
-    product: {id: 1, name: 'Product 05', price: 19.9},
-    quantity: 10,
-  },
+    orderQuantity: 10,
+    productQuantity: 10,
+    averagePrice: 10,
+    productId: 1,
+    total: 10,
+  }
 ];
 
 //50 us states array

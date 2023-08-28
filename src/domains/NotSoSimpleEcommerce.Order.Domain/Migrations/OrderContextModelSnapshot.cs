@@ -53,25 +53,6 @@ namespace NotSoSimpleEcommerce.Order.Domain.Migrations
                     b.ToTable("Order", (string)null);
                 });
 
-            modelBuilder.Entity("NotSoSimpleEcommerce.Shared.Models.ProductEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ProductEntity");
-                });
-
             modelBuilder.Entity("NotSoSimpleEcommerce.Shared.Models.StatusEntity", b =>
                 {
                     b.Property<int>("Id")

@@ -41,6 +41,25 @@ namespace NotSoSimpleEcommerce.Order.Modules
                       (_, c) => c.Resolve<OrderContext>())
               ).InstancePerLifetimeScope();
             
+            
+            builder
+                .RegisterGeneric(typeof(UpdateEntityRepository<>))
+                .As(typeof(IUpdateEntityRepository<>))
+                .WithParameter(
+                    new ResolvedParameter(
+                        (i, _) => i.ParameterType == typeof(DbContext),
+                        (_, c) => c.Resolve<OrderContext>())
+                ).InstancePerLifetimeScope();
+            
+            builder
+                .RegisterGeneric(typeof(DeleteEntityRepository<>))
+                .As(typeof(IDeleteEntityRepository<>))
+                .WithParameter(
+                    new ResolvedParameter(
+                        (i, _) => i.ParameterType == typeof(DbContext),
+                        (_, c) => c.Resolve<OrderContext>())
+                ).InstancePerLifetimeScope();
+
             builder
                 .RegisterGeneric(typeof(ReadEntityRepository<>))
                 .As(typeof(IReadEntityRepository<>))

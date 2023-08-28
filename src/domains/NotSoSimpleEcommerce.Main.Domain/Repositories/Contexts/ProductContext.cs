@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NotSoSimpleEcommerce.Main.Domain.Repositories.Configurations;
 using NotSoSimpleEcommerce.Shared.Models;
+using NotSoSimpleEcommerce.Shared.Repositories.Configurations;
 
 namespace NotSoSimpleEcommerce.Main.Domain.Repositories.Contexts
 {

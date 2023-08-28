@@ -13,7 +13,7 @@ namespace NotSoSimpleEcommerce.Order.Domain.Mappings
                 productId: order.ProductId,
                 quantity: order.Quantity,
                 boughtBy:order.BoughtBy,
-                statusId: OrderStatus.Created
+                statusId: OrderStatus.Pendente
             );
         }
         
@@ -24,7 +24,7 @@ namespace NotSoSimpleEcommerce.Order.Domain.Mappings
                 productId: order.ProductId,
                 quantity: order.Quantity,
                 boughtBy:order.BoughtBy,
-                statusId: OrderStatus.Created
+                statusId: OrderStatus.Pendente
             );
         }
     }

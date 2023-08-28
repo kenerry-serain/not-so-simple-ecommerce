@@ -1,0 +1,4 @@
+subjectAltName=@alt_names
+[alt_names]
+DNS.3 = *.internal
+DNS.4 = localhost

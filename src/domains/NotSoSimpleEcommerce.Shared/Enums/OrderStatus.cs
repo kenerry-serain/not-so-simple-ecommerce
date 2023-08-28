@@ -2,6 +2,6 @@
 
 public enum OrderStatus
 {
-    Created,
-    Confirmed
+    Pendente,
+    Confirmada
 }

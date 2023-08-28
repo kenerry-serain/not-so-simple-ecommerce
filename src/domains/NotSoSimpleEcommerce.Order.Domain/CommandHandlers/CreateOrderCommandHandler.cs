@@ -39,7 +39,7 @@ public sealed class CreateOrderCommandHandler : IRequestHandler<CreateOrderComma
     public async Task<OrderResponse> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
         var loggedUser = _httpContextAccessor.HttpContext.User.Claims
-            .FirstOrDefault(claim => claim.Type ==JwtRegisteredClaimNames.Email)
+            .FirstOrDefault(claim => claim.Type.Contains(JwtRegisteredClaimNames.Email))
             ?.Value;
         if (string.IsNullOrWhiteSpace(loggedUser))
             throw new ArgumentNullException();

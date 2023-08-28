@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import {
   MaterialReactTable,
   type MaterialReactTableProps,
@@ -147,9 +148,9 @@ const Product = () => {
         renderTopToolbarCustomActions={() => (
           <Button
             onClick={() => setCreateModalOpen(true)}
-            variant="contained"
+            startIcon={<AddOutlinedIcon />}
           >
-            Criar Produto
+            Produto
           </Button>
         )}
       />

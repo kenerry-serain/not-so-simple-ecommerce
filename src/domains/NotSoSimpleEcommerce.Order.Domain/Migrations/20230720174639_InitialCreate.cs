@@ -14,20 +14,6 @@ namespace NotSoSimpleEcommerce.Order.Domain.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "ProductEntity",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    Price = table.Column<decimal>(type: "numeric", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductEntity", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Status",
                 columns: table => new
                 {
@@ -54,9 +40,9 @@ namespace NotSoSimpleEcommerce.Order.Domain.Migrations
                 {
                     table.PrimaryKey("PK_Order", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Order_ProductEntity_ProductId",
+                        name: "FK_Order_Product_ProductId",
                         column: x => x.ProductId,
-                        principalTable: "ProductEntity",
+                        principalTable: "Product",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -94,10 +80,7 @@ namespace NotSoSimpleEcommerce.Order.Domain.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Order");
-
-            migrationBuilder.DropTable(
-                name: "ProductEntity");
-
+            
             migrationBuilder.DropTable(
                 name: "Status");
         }

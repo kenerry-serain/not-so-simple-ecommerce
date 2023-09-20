@@ -27,7 +27,7 @@ try
     builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
     builder.Host.ConfigureContainer<ContainerBuilder>(applicationBuilder =>
     {
-        applicationBuilder.RegisterModule<AwsModule>();
+        applicationBuilder.RegisterModule(new AwsModule());
         applicationBuilder.RegisterModule<DomainModule>();
         applicationBuilder.RegisterModule(new InfrastructureModule(builder.Configuration));
         applicationBuilder

@@ -4,39 +4,39 @@ networks:
         driver: bridge
         
 services:
-    not-so-simple-ecommerce.site:
-      container_name: not-so-simple-ecommerce-site
-      image: not-so-simple-ecommerce/not-so-simple-ecommerce-site
-      build:
-        context: src/frontend
-        dockerfile: Dockerfile.dev
-      volumes:
-        - ./src/frontend:/app
-      ports:
-        - "3000:3000"
-      networks:
-          - not-so-simple-ecommerce
+    # not-so-simple-ecommerce.site:
+    #   container_name: not-so-simple-ecommerce-site
+    #   image: not-so-simple-ecommerce/not-so-simple-ecommerce-site
+    #   build:
+    #     context: src/frontend
+    #     dockerfile: Dockerfile.dev
+    #   volumes:
+    #     - ./src/frontend:/app
+    #   ports:
+    #     - "3000:3000"
+    #   networks:
+    #       - not-so-simple-ecommerce
 
-    not-so-simple-ecommerce.nginx:
-      container_name: not-so-simple-ecommerce-lb
-      image: nginx:1.20.2
-      volumes:
-        - "./nginx/nginx.conf:/etc/nginx/nginx.conf:ro"
-        - "${NGINX_CERTIFICATES_PATH}:/etc/nginx/certs:ro"
-      ports:
-        - "44300:44300"
-      networks:
-          - not-so-simple-ecommerce
+    # not-so-simple-ecommerce.nginx:
+    #   container_name: not-so-simple-ecommerce-lb
+    #   image: nginx:1.20.2
+    #   volumes:
+    #     - "./nginx/nginx.conf:/etc/nginx/nginx.conf:ro"
+    #     - "${NGINX_CERTIFICATES_PATH}:/etc/nginx/certs:ro"
+    #   ports:
+    #     - "44300:44300"
+    #   networks:
+    #       - not-so-simple-ecommerce
           
-    not-so-simple-ecommerce.db:
-        container_name: not-so-simple-ecommerce-db
-        image: postgres:10.14
-        ports:
-            - '5432:5432'
-        networks:
-            - not-so-simple-ecommerce
-        env_file:
-          - ./.env
+    # not-so-simple-ecommerce.db:
+    #     container_name: not-so-simple-ecommerce-db
+    #     image: postgres:10.14
+    #     ports:
+    #         - '5432:5432'
+    #     networks:
+    #         - not-so-simple-ecommerce
+    #     env_file:
+    #       - ./.env
 
     not-so-simple-ecommerce.main:
         container_name: not-so-simple-ecommerce-main

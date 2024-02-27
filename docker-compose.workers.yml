@@ -1,0 +1,37 @@
+networks:
+  nsse-network:
+    external: true
+
+services:
+
+  nsse.invoice.internal:
+    container_name: nsse.invoice.internal
+    image: nsse/invoice
+    ports:
+      - 5004:443
+    build:
+      context: .
+      dockerfile: src/workers/NotSoSimpleEcommerce.InvoiceGenerator/Dockerfile
+    env_file:
+      - ./.env
+    volumes:
+      - ${CERTIFICATES_HOST_PATH}:${CERTIFICATES_CONTAINER_PATH}
+      - ${AWS_CREDENTIALS_HOST_PATH}:${AWS_CREDENTIALS_CONTAINER_PATH}
+    networks:
+      - nsse-network
+
+  nsse.notificator.internal:
+    container_name: nsse.notificator.internal
+    image: nsse/notificator
+    ports:
+      - 5005:443
+    build:
+      context: .
+      dockerfile: src/workers/NotSoSimpleEcommerce.Notificator/Dockerfile
+    env_file:
+      - ./.env
+    volumes:
+      - ${CERTIFICATES_HOST_PATH}:${CERTIFICATES_CONTAINER_PATH}
+      - ${AWS_CREDENTIALS_HOST_PATH}:${AWS_CREDENTIALS_CONTAINER_PATH}
+    networks:
+      - nsse-network

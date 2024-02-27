@@ -47,11 +47,9 @@ namespace NotSoSimpleEcommerce.Order.Domain.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId")
-                        .IsUnique();
+                    b.HasIndex("ProductId");
 
-                    b.HasIndex("StatusId")
-                        .IsUnique();
+                    b.HasIndex("StatusId");
 
                     b.ToTable("Order", (string)null);
                 });

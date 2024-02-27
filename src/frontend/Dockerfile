@@ -10,6 +10,7 @@ COPY --from=build /nsse-frontend/dist /usr/share/nginx/html
 RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx/nginx.conf /etc/nginx/conf.d/nginx.conf
 USER nginx
-HEALTHCHECK CMD curl --fail http://localhost:80/ || exit 1
-EXPOSE 80
+HEALTHCHECK CMD curl --fail http://localhost:3000/ || exit 1
+
+EXPOSE 3000
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

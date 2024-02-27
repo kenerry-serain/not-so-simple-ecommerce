@@ -49,7 +49,7 @@ namespace NotSoSimpleEcommerce.Main.Domain.Migrations
                 name: "IX_Stock_ProductId",
                 table: "Stock",
                 column: "ProductId",
-                unique: true);
+                unique: false);
         }
 
         /// <inheritdoc />

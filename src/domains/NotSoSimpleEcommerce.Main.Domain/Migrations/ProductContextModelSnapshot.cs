@@ -57,8 +57,7 @@ namespace NotSoSimpleEcommerce.Main.Domain.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId")
-                        .IsUnique();
+                    b.HasIndex("ProductId");
 
                     b.ToTable("Stock", (string)null);
                 });

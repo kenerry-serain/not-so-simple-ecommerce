@@ -32,35 +32,42 @@ const Product = () => {
   const [validationErrors, setValidationErrors] = useState<{
     [cellId: string]: string;
   }>({});
-  const createProduct = useCreateProduct();
-  const updateProduct = useUpdateProduct();
-  const deleteProduct = useDeleteProduct();
+  const createProduct = useCreateProduct({
+    onSuccess: () => {
+      setChanged(!changed);
+    },
+  });
+  
+  const updateProduct = useUpdateProduct({
+    onSuccess: () => {
+      setChanged(!changed);
+    },
+  });
+  const deleteProduct = useDeleteProduct({
+    onSuccess: () => {
+      setChanged(!changed);
+    },
+  });
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    setTableData(products);
-  }, [products]);
-  
-  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ['product'] })
     getProducts()
     .then((response) => {
-      queryClient.invalidateQueries({ queryKey: ['product'] })
       setTableData(response ?? []);
     });
   }, [changed]);
-  
 
   const handleCreateNewRow = (values: ProductEntity) => {
     createProduct.mutate(values);
-    setChanged (true);
   };
 
   const handleSaveRowEdits: MaterialReactTableProps<ProductEntity>['onEditingRowSave'] =
     async ({ exitEditingMode, row, values }) => {
       if (!Object.keys(validationErrors).length) {
         const currentProduct = products.filter((product) => product.id === +values.id)[0];
-        updateProduct.mutate({id: currentProduct.id, body: {name: values.name, price: values.price}});
-        setChanged (true);
+        updateProduct
+          .mutate({id: currentProduct.id, body: {name: values.name, price: values.price}});
         exitEditingMode(); //required to exit editing mode and close modal
       }
     };
@@ -77,7 +84,8 @@ const Product = () => {
         return;
       }
       //send api delete request here, then refetch or update local table data for re-render
-      deleteProduct.mutate({id: row.getValue('id')});
+      deleteProduct
+        .mutate({id: row.getValue('id')});
     },
     [tableData],
   );
@@ -230,3 +238,10 @@ export const CreateProductModal = ({
 };
 
 export default Product;
+
+function useQuery(arg0: string, getProducts: () => Promise<any>, arg2: {
+  // Use the onSuccess callback to update table data
+  onSuccess: (data: any) => void;
+}): { data: any; isLoading: any; isError: any; } {
+  throw new Error('Function not implemented.');
+}

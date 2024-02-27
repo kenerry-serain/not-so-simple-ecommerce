@@ -1,5 +1,4 @@
-﻿using Amazon.Extensions.NETCore.Setup;
-using Amazon.S3;
+﻿using Amazon.S3;
 using Amazon.SQS;
 using Autofac;
 using Autofac.Core;
@@ -14,7 +13,6 @@ namespace NotSoSimpleEcommerce.Main.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            
             builder.Register(componentContext =>
                 {
                     var configuration = componentContext.Resolve<IConfiguration>();
@@ -37,10 +35,6 @@ namespace NotSoSimpleEcommerce.Main.Modules
                 .Named<IAmazonSQS>(nameof(IAmazonSQS))
                 .SingleInstance();
 
-
-            // builder.RegisterType<AmazonSQSClient>()
-            //     .Named<IAmazonSQS>(nameof(IAmazonSQS));
-            
             builder.RegisterType<AmazonS3Client>()
                 .As<IAmazonS3>();
                 

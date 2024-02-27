@@ -35,9 +35,21 @@ const Order = () => {
   const [validationErrors, setValidationErrors] = useState<{
     [cellId: string]: string;
   }>({});
-  const createOrder = useCreateOrder();
-  const updateOrder = useUpdateOrder();
-  const deleteOrder = useDeleteOrder();
+  const createOrder = useCreateOrder({
+    onSuccess: () => {
+      setChanged(!changed);
+    },
+  });
+  const updateOrder = useUpdateOrder({
+    onSuccess: () => {
+      setChanged(!changed);
+    },
+  });
+  const deleteOrder = useDeleteOrder({
+    onSuccess: () => {
+      setChanged(!changed);
+    },
+  });
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -45,16 +57,16 @@ const Order = () => {
   }, [orders]);
   
   useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ['order'] })
     getOrders()
     .then((response) => {
-      queryClient.invalidateQueries({ queryKey: ['order'] })
       setTableData(response ?? []);
     });
   }, [changed]);
   
   const handleCreateNewRow = (values: OrderEntity) => {
     createOrder.mutate({productId: values.productId, quantity: values.quantity});
-    setChanged (true);
+    setChanged (!changed);
   };
 
   const handleSaveRowEdits: MaterialReactTableProps<OrderEntity>['onEditingRowSave'] =
@@ -62,7 +74,6 @@ const Order = () => {
       if (!Object.keys(validationErrors).length) {
         const currentOrder = orders.filter((order) => order.id === +values.id)[0];
         updateOrder.mutate({id: currentOrder.id, body: {productId: currentOrder.product.id, quantity: values.quantity}});
-        setChanged (true);
         exitEditingMode(); //required to exit editing mode and close modal
       }
     };
@@ -79,7 +90,6 @@ const Order = () => {
         return;
       }
       deleteOrder.mutate({id: row.getValue('id')});
-      setChanged (true);
     },
     [tableData],
   );

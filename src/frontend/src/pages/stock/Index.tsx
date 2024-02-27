@@ -37,9 +37,21 @@ const Stock = () => {
   const [validationErrors, setValidationErrors] = useState<{
     [cellId: string]: string;
   }>({});
-  const createStock = useCreateStock();
-  const updateStock = useUpdateStock();
-  const deleteStock = useDeleteStock();
+  const createStock = useCreateStock({
+    onSuccess: () => {
+      setChanged(!changed);
+    },
+  });
+  const updateStock = useUpdateStock({
+    onSuccess: () => {
+      setChanged(!changed);
+    },
+  });
+  const deleteStock = useDeleteStock({
+    onSuccess: () => {
+      setChanged(!changed);
+    },
+  });
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -47,9 +59,9 @@ const Stock = () => {
   }, [stocks]);
   
   useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ['stock'] })
     getStocks()
     .then((response) => {
-      queryClient.invalidateQueries({ queryKey: ['stock'] })
       setTableData(response ?? []);
     });
   }, [changed]);
@@ -57,7 +69,6 @@ const Stock = () => {
 
   const handleCreateNewRow = (values: StockEntity) => {
     createStock.mutate({id: values.productId, body: {quantity: values.quantity}});
-    setChanged (true);
   };
 
   const handleSaveRowEdits: MaterialReactTableProps<StockEntity>['onEditingRowSave'] =
@@ -65,7 +76,6 @@ const Stock = () => {
       if (!Object.keys(validationErrors).length) {
         const currentStock = stocks.filter((stock) => stock.id === +values.id)[0];
         updateStock.mutate({id: currentStock.product.id, body: {quantity: values.quantity}});
-        setChanged (true);
         exitEditingMode(); //required to exit editing mode and close modal
       }
     };
@@ -82,7 +92,6 @@ const Stock = () => {
         return;
       }
       deleteStock.mutate({id: row.getValue('id')});
-      setChanged (true);
     },
     [tableData],
   );

@@ -28,7 +28,7 @@ namespace NotSoSimpleEcommerce.IdentityServer.Domain.Migrations
             migrationBuilder.InsertData(
                 table: "User",
                 columns: new[] { "Id", "Email", "Password" },
-                values: new object[] { 1, "admin@not-so-simple-ecommerce.com", "yJ�w�flVG6�@85F�Q�S�0�C�s'P��" });
+                values: new object[] { 1, "admin@nsse.com", "yJ�w�flVG6�@85F�Q�S�0�C�s'P��" });
         }
 
         /// <inheritdoc />

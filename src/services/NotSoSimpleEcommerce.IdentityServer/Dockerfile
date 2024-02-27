@@ -14,6 +14,6 @@ RUN adduser dotnet --disabled-password
 RUN apk add curl 
 
 USER dotnet
-HEALTHCHECK CMD curl -k --fail https://localhost:443/main/health
+HEALTHCHECK CMD curl -k --fail https://localhost:443/identity/health
 ENTRYPOINT ["dotnet", "/nsse-backend/NotSoSimpleEcommerce.IdentityServer.dll"]
 

@@ -18,27 +18,27 @@ export type ProductRequest = {
   price: number;
 };
 
-export const useCreateProduct = () =>
+export const useCreateProduct = ({onSuccess}) =>
   useMutation({
     mutationKey: ["createProduct"],
     mutationFn: (body: ProductRequest) => http.post(`/main/api/product`, body),
-    onSuccess: () => {},
+    onSuccess: () => onSuccess(),
     onError: () => {},
   });
 
-export const useUpdateProduct = () =>
+export const useUpdateProduct = ({onSuccess}) =>
   useMutation({
     mutationKey: ["updateProduct"],
     mutationFn: (variables: { id: number; body: ProductRequest }) =>
       http.put(`/main/api/product/${variables.id}`, variables.body),
-    onSuccess: () => {},
+      onSuccess: () => onSuccess(),
     onError: () => {},
   });
 
-export const useDeleteProduct = () =>
+export const useDeleteProduct = ({onSuccess}) =>
   useMutation({
     mutationKey: ["deleteProduct"],
     mutationFn: (variables: { id: number })  => http.delete(`/main/api/product/${variables.id}`),
-    onSuccess: () => {},
+    onSuccess: () => onSuccess(),
     onError: () => {},
   });

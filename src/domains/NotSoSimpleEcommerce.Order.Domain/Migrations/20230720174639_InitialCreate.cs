@@ -66,13 +66,13 @@ namespace NotSoSimpleEcommerce.Order.Domain.Migrations
                 name: "IX_Order_ProductId",
                 table: "Order",
                 column: "ProductId",
-                unique: true);
+                unique: false);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Order_StatusId",
                 table: "Order",
                 column: "StatusId",
-                unique: true);
+                unique: false);
         }
 
         /// <inheritdoc />

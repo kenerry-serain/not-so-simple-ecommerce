@@ -48,7 +48,7 @@ namespace NotSoSimpleEcommerce.IdentityServer.Domain.Migrations
                         new
                         {
                             Id = 1,
-                            Email = "admin@not-so-simple-ecommerce.com",
+                            Email = "admin@nsse.com",
                             Password = "yJ�w�flVG6�@85F�Q�S�0�C�s'P��"
                         });
                 });

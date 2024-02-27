@@ -1,5 +1,5 @@
 #!/bin/bash
-password="@DevOpsNaNuvem$%!"
+password="DevOpsNaNuvem0!"
 days=365
 keySize=4096
 

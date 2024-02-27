@@ -1,17 +1,18 @@
 
 # Endpoints
+- https://devopsnanuvem.internal:44300
 - https://localhost:5000/main/swagger
-- https://localhost:5001/healthchecks/ui
-- https://localhost:5002/order/swagger
+- https://localhost:5001/order/swagger
+- https://localhost:5002/identity/swagger
+- https://localhost:5003/healthchecks/ui
+- https://localhost:5004/invoice/swagger
+- https://localhost:5005/notificator/swagger
 
 # Running the application locally
 ``` 
-docker-compose up
+docker-compose -f docker-compose.infra.yml  up -d
+docker-compose -f docker-compose.workers.yml -f docker-compose.yml up -d
 ``` 
-# Adding migrations
-``` 
-dotnet ef migrations add InitialCreate --project ..\SimpleEcommerceV2.IdentityServer.Domain\ --verbose
-```
 
 # Running migrations manually
 ``` 

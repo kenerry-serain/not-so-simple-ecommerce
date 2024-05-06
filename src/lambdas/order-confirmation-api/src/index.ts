@@ -1,40 +1,68 @@
-import { APIGatewayEvent } from "aws-lambda";
-import { Order } from "./entities/order";
-import { AppDataSource } from "./data-source";
-import { PublishCommand, SNSClient } from "@aws-sdk/client-sns";
-import { env } from "./env";
+import * as AWS from 'aws-sdk';
+import { Client } from 'pg';
+import { Context } from 'aws-lambda';
 
+const secretsManager = new AWS.SecretsManager();
+const sns = new AWS.SNS();
+const rdsProxyEndpoint = process.env.RDS_PROXY_ENDPOINT as string;
+const secretArn = process.env.RDS_SECRET_ARN as string;
+const snsTopicArn = process.env.SNS_TOPIC_ARN as string;
+const databaseName = process.env.RDS_DATABASE_NAME as string;
 
-export const handler = async (event: any) => {
-  await AppDataSource.initialize();
-  await setOrderAsConfirmed();
-  await publishOrderConfirmedEvent();
-  
-  return {
-    statusCode: 200,
-    body: JSON.stringify({}),
-  };
+export const handler = async (event: any, _: Context) => {
 
-  async function publishOrderConfirmedEvent() {
-    const params = {
-      Message: JSON.stringify(`{\"Id\": ${event.body.Id}}`),
-      TopicArn: env.TOPIC_ARN
-    };
-    const snsClient = new SNSClient({ region: env.REGION });
-    await snsClient.send(new PublishCommand(params));
-  }
+    console.log(event);
 
-  async function setOrderAsConfirmed() {
-    const messageBody = JSON.parse(event.body);
-    const repository = await AppDataSource.getRepository(Order);
-    let order = await repository.findOneBy({ Id: messageBody.Id });
-
-    if (order != null) {
-      order.Status = messageBody.Status;
-      await repository.save(order);
+    /* Recuperando Secret do Banco de Dados */
+    const secret = await getSecret();
+    const client = new Client({
+        host: rdsProxyEndpoint,
+        user: secret.username,
+        password: secret.password,
+        database: databaseName,
+        ssl: true,
+        port: 5432
+    });
+    
+    const body = typeof event.body === 'string' ? JSON.parse(event.body) : event.body;
+    if (!body || !body.Id) {
+        throw new Error('Id is missing from the event body');
     }
-  }
+
+    /* Conectando no Banco de Dados */
+    await client.connect();
+
+    try {
+        /* Atualizando Status da Ordem para Confirmado */
+        const sql = `UPDATE "Order" SET "StatusId" = 1 WHERE "Id" = $1`;
+        const values = [body.Id];
+        const response = await client.query(sql, values);
+        console.log('Order updated successfully:', response);
+
+        /* Publicando mensagem no tópico orderConfirmed */
+        await publishToSns(JSON.stringify({Id: body.Id}));
+        return response;
+    } catch (error) {
+        console.error('Failed to update Order:', error);
+        throw error;
+    } finally {
+        await client.end();
+    }
 };
 
-handler({body: "{\n    \"Id\": 1,\n    \"Status\": 1\n}"});
+async function getSecret(): Promise<any> {
+    const data = await secretsManager.getSecretValue({ SecretId: secretArn }).promise();
+    if ('SecretString' in data) {
+        return JSON.parse(data.SecretString as string);
+    }
+    throw new Error('Secret not found');
+}
 
+async function publishToSns(message: string): Promise<void> {
+    const params = {
+        Message: message,
+        TopicArn: snsTopicArn,
+    };
+    await sns.publish(params).promise();
+    console.log('Message published to SNS topic:', message);
+}

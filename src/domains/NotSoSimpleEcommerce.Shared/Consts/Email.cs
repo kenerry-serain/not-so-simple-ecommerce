@@ -4,7 +4,7 @@ public static class Email
 {
     public static class Subjects
     {
-        public const string OrderCreated= "Order Received";
+        public const string OrderCreated= "Order Created";
     }
 
     public static class Templates

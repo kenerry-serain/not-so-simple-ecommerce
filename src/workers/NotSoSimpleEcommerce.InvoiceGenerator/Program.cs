@@ -32,6 +32,12 @@ try
         builder.Configuration.GetSection("InvoiceGenerator:AwsSqsQueueMonitorParams01")
     );
 
+    builder.Services.Configure<AwsSqsMessageSenderParams>(
+        "AwsSqsMessageSenderParams01",
+        builder.Configuration.GetSection("InvoiceGenerator:AwsSqsMessageSenderParams01")
+    );
+
+
     builder.Services.AddMemoryCache();
     builder.Services.AddHealthChecks();
     builder.Services.AddControllers();

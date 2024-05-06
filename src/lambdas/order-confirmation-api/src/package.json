@@ -1,20 +1,24 @@
 {
-  "name": "order-confirmation-api",
+  "name": "order-confirmed",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
-  "license": "MIT",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
   "devDependencies": {
-    "@types/node": "^20.4.2",
+    "@types/node": "^20.11.30",
+    "@types/pg": "^8.11.4",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "@aws-sdk/client-sns": "^3.370.0",
-    "@types/aws-lambda": "^8.10.119",
-    "dotenv": "^16.3.1",
-    "pg": "^8.11.1",
-    "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.3.17"
+    "@aws-sdk/client-sns": "^3.540.0",
+    "@types/aws-lambda": "^8.10.136",
+    "aws-sdk": "^2.1589.0",
+    "pg": "^8.11.3"
   }
 }

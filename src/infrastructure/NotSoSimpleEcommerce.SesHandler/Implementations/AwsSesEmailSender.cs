@@ -47,7 +47,7 @@ namespace NotSoSimpleEcommerce.SesHandler.Implementations;
                 (
                     "Email sent: {StatusCode}, Response {MailMoreInfo}",
                     response.HttpStatusCode,
-                    response
+                    response.ToString()
                 );
             }
             catch (Exception exception)
@@ -56,7 +56,7 @@ namespace NotSoSimpleEcommerce.SesHandler.Implementations;
                 (
                     exception,
                     "An error happened while sending an email: {MailMoreInfo}",
-                    exception
+                    exception.ToString()
                 );
             }
         }

@@ -1,5 +1,10 @@
 ﻿using Amazon.SQS;
 using Autofac;
+using Autofac.Core;
+using Microsoft.Extensions.Options;
+using NotSoSimpleEcommerce.SqsHandler.Abstractions;
+using NotSoSimpleEcommerce.SqsHandler.Implementations;
+using NotSoSimpleEcommerce.SqsHandler.Models;
 
 namespace NotSoSimpleEcommerce.InvoiceGenerator.Modules;
 
@@ -28,5 +33,19 @@ public class AwsModule: Module
             })
             .Named<IAmazonSQS>(nameof(IAmazonSQS))
             .SingleInstance();
+                
+            builder.RegisterType<AwsSqsMessageSender>()
+                .As<IMessageSender>()
+                .WithParameter(
+                    new ResolvedParameter(
+                        (i, _) => i.ParameterType == typeof(IAmazonSQS),
+                        (_, c) => c.ResolveNamed<IAmazonSQS>(nameof(IAmazonSQS)))
+                )
+                .WithParameter(
+                    new ResolvedParameter(
+                        (i, _) => i.ParameterType == typeof(AwsSqsMessageSenderParams),
+                        (_, c) => c.Resolve<IOptionsSnapshot<AwsSqsMessageSenderParams>>()
+                            .Get("AwsSqsMessageSenderParams01"))
+                );
     }
 }

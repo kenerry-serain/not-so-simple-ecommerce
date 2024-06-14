@@ -5,15 +5,15 @@ networks:
 services:
 
   nsse.site.internal:
-    container_name: nsse.site.internal
-    image: nsse/site
-    ports:
-      - 3000:3000
-    build:
-      context: src/frontend
-      dockerfile: Dockerfile
-    networks:
-      - nsse-network
+   container_name: nsse.site.internal
+   image: nsse/site
+   ports:
+     - 3000:3000
+   build:
+     context: src/frontend
+     dockerfile: Dockerfile
+   networks:
+     - nsse-network
 
   nsse.main.internal:
     container_name: nsse.main.internal
@@ -28,53 +28,54 @@ services:
     volumes:
       - ${CERTIFICATES_HOST_PATH}:${CERTIFICATES_CONTAINER_PATH}
       - ${AWS_CREDENTIALS_HOST_PATH}:${AWS_CREDENTIALS_CONTAINER_PATH}
+      - ${MONGO_CERTIFICATE_HOST_PATH}:${MONGO_CERTIFICATE_CONTAINER_PATH}
     networks:
       - nsse-network
 
   nsse.order.internal:
-    container_name: nsse.order.internal
-    image: nsse/order
-    ports:
-      - 5001:443
-    build:
-      context: .
-      dockerfile: src/services/NotSoSimpleEcommerce.Order/Dockerfile
-    env_file:
-      - ./.env
-    volumes:
-      - ${CERTIFICATES_HOST_PATH}:${CERTIFICATES_CONTAINER_PATH}
-      - ${AWS_CREDENTIALS_HOST_PATH}:${AWS_CREDENTIALS_CONTAINER_PATH}
-    networks:
-      - nsse-network
+   container_name: nsse.order.internal
+   image: nsse/order
+   ports:
+     - 5001:443
+   build:
+     context: .
+     dockerfile: src/services/NotSoSimpleEcommerce.Order/Dockerfile
+   env_file:
+     - ./.env
+   volumes:
+     - ${CERTIFICATES_HOST_PATH}:${CERTIFICATES_CONTAINER_PATH}
+     - ${AWS_CREDENTIALS_HOST_PATH}:${AWS_CREDENTIALS_CONTAINER_PATH}
+   networks:
+     - nsse-network
 
   nsse.identity.internal:
-    container_name: nsse.identity.internal
-    image: nsse/identity
-    ports:
-      - 5002:443
-    build:
-      context: .
-      dockerfile: src/services/NotSoSimpleEcommerce.IdentityServer/Dockerfile
-    env_file:
-      - ./.env
-    volumes:
-      - ${CERTIFICATES_HOST_PATH}:${CERTIFICATES_CONTAINER_PATH}
-      - ${AWS_CREDENTIALS_HOST_PATH}:${AWS_CREDENTIALS_CONTAINER_PATH}
-    networks:
-      - nsse-network
+   container_name: nsse.identity.internal
+   image: nsse/identity
+   ports:
+     - 5002:443
+   build:
+     context: .
+     dockerfile: src/services/NotSoSimpleEcommerce.IdentityServer/Dockerfile
+   env_file:
+     - ./.env
+   volumes:
+     - ${CERTIFICATES_HOST_PATH}:${CERTIFICATES_CONTAINER_PATH}
+     - ${AWS_CREDENTIALS_HOST_PATH}:${AWS_CREDENTIALS_CONTAINER_PATH}
+   networks:
+     - nsse-network
 
   nsse.health-checker.internal:
-    container_name: nsse.health-checker.internal
-    image: nsse/health-checker
-    ports:
-      - 5003:443
-    build:
-      context: .
-      dockerfile: src/services/NotSoSimpleEcommerce.HealthChecker/Dockerfile
-    env_file:
-      - ./.env
-    volumes:
-      - ${CERTIFICATES_HOST_PATH}:${CERTIFICATES_CONTAINER_PATH}
-      - ${AWS_CREDENTIALS_HOST_PATH}:${AWS_CREDENTIALS_CONTAINER_PATH}
-    networks:
-      - nsse-network
+   container_name: nsse.health-checker.internal
+   image: nsse/health-checker
+   ports:
+     - 5003:443
+   build:
+     context: .
+     dockerfile: src/services/NotSoSimpleEcommerce.HealthChecker/Dockerfile
+   env_file:
+     - ./.env
+   volumes:
+     - ${CERTIFICATES_HOST_PATH}:${CERTIFICATES_CONTAINER_PATH}
+     - ${AWS_CREDENTIALS_HOST_PATH}:${AWS_CREDENTIALS_CONTAINER_PATH}
+   networks:
+     - nsse-network

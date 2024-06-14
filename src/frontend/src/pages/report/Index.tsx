@@ -3,59 +3,53 @@ import {
   MaterialReactTable,
   type MRT_ColumnDef,
 } from 'material-react-table';
-import { data } from './makeData';
 import { ReportEntity } from '../../types/Stock.type';
+import { useQueryClient } from '@tanstack/react-query';
+import React, { useEffect, useMemo, useState } from 'react';
+import { getReports, useReport } from '../../hooks/useReport';
 
 const Report = () => {
-  const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [tableData, setTableData] = useState<ReportEntity[]>(() => data);
-  const [validationErrors, setValidationErrors] = useState<{
-    [cellId: string]: string;
-  }>({});
+  const {data: reports=[]} = useReport();
+  const [tableData, setTableData] = useState<ReportEntity[]>(() => reports);
+  const [changed] = useState(false);
 
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ['product'] })
+    getReports()
+    .then((response) => {
+      setTableData(response ?? []);
+    });
+  }, [changed]);
   const columns = useMemo<MRT_ColumnDef<ReportEntity>[]>(
     () => [
       {
-        accessorKey: 'id',
-        header: 'Id',
-        enableColumnOrdering: false,
-        enableEditing: false, //disable editing on this column
-        enableSorting: false,
-        size: 80,
-      },
-      {
-        accessorKey: 'product.name',
+        accessorKey: 'productName',
         header: 'Produto',
         enableColumnOrdering: false,
         enableSorting: false,
         size: 80,
       },
       {
-        accessorKey: 'orderQuantity',
-        header: 'Quantidade de Ordens',
+        accessorKey: 'totalOrders',
+        header: 'Qtde Pedidos',
         enableColumnOrdering: false,
-        enableSorting: false,
+        enableSorting: true,
         size: 80,
       },
       {
-        accessorKey: 'productQuantity',
-        header: 'Quantidade de Produtos',
+        accessorKey: 'totalOrdered',
+        header: 'Qtde Produtos Pedidos',
         enableColumnOrdering: false,
-        enableSorting: false,
+        enableSorting: true,
         size: 80,
       },
       {
-        accessorKey: 'averagePrice',
-        header: 'Preço Médio',
-        enableColumnOrdering: false,
-        enableSorting: false,
-        size: 80,
-      },
-      {
-        accessorKey: 'total',
+        accessorKey: 'totalSold',
         header: 'Total',
         enableColumnOrdering: false,
-        enableSorting: false,
+        enableSorting: true,
         size: 80,
       }
     ],

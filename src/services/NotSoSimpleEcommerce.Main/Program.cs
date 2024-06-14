@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using HealthChecks.UI.Client;
@@ -95,6 +96,26 @@ try
     });
     builder.Services.AddAuthorization();
     builder.Host.UseSerilog();
+
+    string pathToCAFile = "/certificates/mongo-ca.pem";
+
+    var localTrustStore = new X509Store(StoreName.Root);
+    var certificateCollection = new X509Certificate2Collection();
+    certificateCollection.Import(pathToCAFile);
+    try
+    {
+        localTrustStore.Open(OpenFlags.ReadWrite);
+        localTrustStore.AddRange(certificateCollection);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("Root certificate import failed: " + ex.Message);
+        throw;
+    }
+    finally
+    {
+        localTrustStore.Close();
+    }
 
     var app = builder.Build();
     app.Map("/main", applicationBuilder =>

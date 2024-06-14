@@ -7,12 +7,12 @@ export interface StockEntity {
 
 export interface ReportEntity {
     id: number;
-    orderQuantity: number;
-    productQuantity: number;
+    totalOrders: number;
+    totalOrdered: number;
     averagePrice: number;
-    total: number;
+    totalSold: number;
     productId: number;
-    product: ProductEntity;
+    productName: string;
 }
 
 export interface ProductEntity {

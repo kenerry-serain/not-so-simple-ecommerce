@@ -97,20 +97,18 @@ try
     builder.Services.AddAuthorization();
     builder.Host.UseSerilog();
 
-    string pathToCAFile = "/certificates/mongo-ca.pem";
-
+    string pathToCAFile = builder.Configuration["MONGO_CERTIFICATE_CONTAINER_PATH"];
     var localTrustStore = new X509Store(StoreName.Root);
     var certificateCollection = new X509Certificate2Collection();
-    certificateCollection.Import(pathToCAFile);
     try
     {
+        certificateCollection.Import(pathToCAFile);
         localTrustStore.Open(OpenFlags.ReadWrite);
         localTrustStore.AddRange(certificateCollection);
     }
     catch (Exception ex)
     {
-        Console.WriteLine("Root certificate import failed: " + ex.Message);
-        throw;
+        Console.WriteLine("Mongo certificate import failed: " + ex.Message);
     }
     finally
     {

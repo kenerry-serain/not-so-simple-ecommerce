@@ -22,7 +22,7 @@ Log.Logger = new LoggerConfiguration()
 
 try
 {
-    Log.Information("Starting Main Microservice");
+    Log.Information("Starting Order Microservice");
     var builder = WebApplication.CreateBuilder(args);
     builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
     builder.Host.ConfigureContainer<ContainerBuilder>(applicationBuilder =>

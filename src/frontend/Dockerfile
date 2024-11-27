@@ -1,11 +1,11 @@
-FROM node:18-alpine3.17 as build
+FROM node:23-alpine3.19 as build
 WORKDIR /nsse-frontend
 COPY package*.json ./
 RUN npm ci --silent --only=production
 COPY . .
 RUN npm run build
 
-FROM nginxinc/nginx-unprivileged:1.25.2-alpine
+FROM nginxinc/nginx-unprivileged:1.26-alpine
 COPY --from=build /nsse-frontend/dist /usr/share/nginx/html
 RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx/nginx.conf /etc/nginx/conf.d/nginx.conf

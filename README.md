@@ -5,7 +5,7 @@ Para fazer login na aplicação utilize as credenciais que estão nas variáveis
 01- Rode os seguintes comandos:
 ``` 
 docker-compose -f docker-compose.infra.yml  up -d
-docker-compose -f docker-compose.workers.yml -f docker-compose -f docker-compose.yml up -d
+docker-compose -f docker-compose.workers.yml -f docker-compose.yml up -d
 ``` 
 Acesse a URL: https://devopsnanuvem.internal:44300
 

@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NotSoSimpleEcommerce.Main.Domain.Migrations
 {
     [DbContext(typeof(ProductContext))]
-    [Migration("20230720174552_InitialCreate")]
+    [Migration("20250108182910_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -60,7 +60,8 @@ namespace NotSoSimpleEcommerce.Main.Domain.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductId")
+                        .IsUnique();
 
                     b.ToTable("Stock", (string)null);
                 });

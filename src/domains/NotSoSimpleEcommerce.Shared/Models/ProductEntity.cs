@@ -1,6 +1,6 @@
 ﻿namespace NotSoSimpleEcommerce.Shared.Models;
 
-public sealed class ProductEntity
+public class ProductEntity
 {
     public int Id { get; set; }
     public string? Name { get; set; }

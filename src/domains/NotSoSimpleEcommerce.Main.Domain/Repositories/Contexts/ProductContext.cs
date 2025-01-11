@@ -15,6 +15,7 @@ namespace NotSoSimpleEcommerce.Main.Domain.Repositories.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProductEntityTypeConfiguration).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(StockEntityTypeConfiguration).Assembly);
             base.OnModelCreating(modelBuilder);
         }
     }

@@ -1,6 +1,6 @@
 ﻿namespace NotSoSimpleEcommerce.Shared.Models
 {
-    public sealed class StockEntity
+    public class StockEntity
     {
         public int Id { get; set; }
         public int ProductId { get; set; }

@@ -1,59 +1,86 @@
-# Login na Aplicação
-Para fazer login na aplicação utilize as credenciais que estão nas variáveis IDENTITY__ADMIN__USER e IDENTITY__ADMIN__USER__PASSWORD, no arquivo .env.
+# Not So Simple Ecommerce
 
-# Rodar Aplicação Localmente
-01- Rode os seguintes comandos:
-``` 
-docker-compose -f docker-compose.infra.yml  up -d
-docker-compose -f docker-compose.workers.yml -f docker-compose.yml up -d
-``` 
-Acesse a URL: https://devopsnanuvem.internal:44300
+Este é o repositório onde reside todo o código da aplicação `not-so-simple-ecommerce`.
+A aplicação é composta por 6 microserviços no backend (.NET) e um frontend em React, todos devidamente dockerizados.
 
-Observação: Se por qualquer motivo a aplicação não funcionar corretamente, verifique abaixo a seção de Troubleshooting.
+Este repositório deve ser utilizado para manipular as imagens das aplicações ou rodar a solução localmente.
 
-# Troubleshooting
-01- Garanta que está utilizando a connection string Local, no arquivo .env.
+---
 
-02- Garanta que os certificados estejam devidamente gerados na pasta certificates.
+## 🛠️ Configuração e Execução da Aplicação
 
-2.1- Garanta que os nomes e caminhos dos certificados estejam todos devidamente referenciados nas seguintes váriavéis, arquivo .env.
+### 1. Infra Stack
 
-    ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PATH
-    ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD
-    NGINX_CERT_HOST_PATH
-    NGINX_CERT_CONTAINER_PATH
-    NGINX_KEY_HOST_PATH
-    NGINX_KEY_CONTAINER_PATH
-    CERTIFICATES_HOST_PATH
-    CERTIFICATES_CONTAINER_PATH
-    NGINX_CERTIFICATES_PATH
+Primeiramente, execute o build da stack de infraestrutura, pois ela é a base para todas as demais stacks.
 
-2.2- Garanta que a senha do certificado colocado na váriavel ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD seja a mesma definida no arquivo /cli/generate-certs.sh 
+Essa stack realiza a criação dos seguintes contêineres:
 
-03- Garanta que tenha feito o setup de DNS (conforme seção abaixo).
+- **LocalStack:** Tecnologia utilizada para replicar localmente diversos serviços da AWS.
+- **Terraform:** Utilizado para criar a infraestrutura local da AWS no LocalStack.
+- **Postgres:** Banco de dados relacional da aplicação `not-so-simple-ecommerce`.
+- **Nginx:** Proxy reverso para agrupar diversas aplicações sob o mesmo domínio.
 
-# Domain Name Server (DNS) Setup
-Parar configurar o DNS da aplicação localmente:
- - Adicione o seguinte registro em C:\Windows\System32\drivers\etc\hosts: 127.0.0.1 devopsnanuvem.internal 
- - Instale o certificado root-ca.crt na sua loja de certificados conforme na aula "Docker Compose / Nginx (Proxy Reverso) / Certificate Store" (Módulo 02).
-
-# Endpoints
-- https://devopsnanuvem.internal:44300
-- https://devopsnanuvem.internal:44300/main/swagger
-- https://devopsnanuvem.internal:44300/order/swagger
-- https://devopsnanuvem.internal:44300/identity/swagger
-- https://devopsnanuvem.internal:44300/healthchecks/ui
-- https://devopsnanuvem.internal:44300/invoice/swagger
-- https://devopsnanuvem.internal:44300/notificator/swagger
-
-# Testes
-- 01-Crie um produto.
-- 02-Crie um estoque de um produto.
-- 03-Crie uma ordem consumindo o estoque de um produto.
-
-# Migrations
-Assim que cada um dos cadastros acima forem acontecendo as migrations vão sendo automaticamente executadas pela aplicação. Mas caso queira executar a migração manualmente por qualquer motivo:
-
-``` 
-dotnet ef database update
+```bash
+docker-compose -f docker-compose.infra.yml up -d
 ```
+
+---
+
+### 2. App Stack
+
+A stack da aplicação é subdividida entre **workers** e **APIs**. Para rodá-las, execute o comando:
+
+```bash
+docker-compose -f docker-compose.workers.yml -f docker-compose.yml up -d
+```
+
+Acesse a aplicação em: [https://devopsnanuvem.internal:44300](https://devopsnanuvem.internal:44300)
+
+📌 **Observação:** Se a aplicação não funcionar corretamente, consulte a seção de **Troubleshooting** abaixo.
+
+---
+
+### 3. Configuração do DNS e Certificados
+
+Instale o certificado `root-ca.crt` na loja de certificados do seu Sistema Operacional conforme
+instruções da aula **Aula 10-Docker Compose / Nginx (Proxy Reverso) / Certificate Store** do Módulo 02.
+
+Caso precise regerar os certificados por qualquer motivo, execute o script bash dentro da pasta **cli**.
+
+```bash
+./cli/generate-certs.sh
+```
+
+📌 **Observação:** Atenção à senha do certificado, pois ela é utilizada na variável `ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD` no arquivo `.env`.
+
+---
+
+### 4. Testando a Aplicação
+
+Se tudo estiver correto, você poderá acessar as seguintes URLs da aplicação:
+
+- [Frontend](https://devopsnanuvem.internal:44300)
+- [Main API](https://devopsnanuvem.internal:44300/main/swagger)
+- [Order API](https://devopsnanuvem.internal:44300/order/swagger)
+- [Identity API](https://devopsnanuvem.internal:44300/identity/swagger)
+- [Health Checks API](https://devopsnanuvem.internal:44300/healthchecks/ui)
+- [Invoice Worker API](https://devopsnanuvem.internal:44300/invoice/swagger)
+- [Notificator Worker API](https://devopsnanuvem.internal:44300/notificator/swagger)
+
+---
+
+### 🚀 Testando o Fluxo da Aplicação
+
+1. Crie um produto.
+2. Crie um estoque para o produto.
+3. Crie uma ordem consumindo o estoque do produto.
+
+---
+
+### 🗄️ Migrations
+
+A aplicação utiliza **migrations**, o que significa que ao iniciar pela primeira vez, as aplicações se conectam automaticamente ao banco de dados e criam as tabelas e dados necessários para o funcionamento correto.
+
+📌 **Dica:** Você pode verificar o processo conectando-se ao banco de dados e observando as tabelas geradas.
+
+---

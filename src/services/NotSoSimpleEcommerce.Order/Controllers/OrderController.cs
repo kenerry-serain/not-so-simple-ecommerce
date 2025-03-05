@@ -36,7 +36,7 @@ public sealed class OrderController : ControllerBase
     public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken)
     {
         var orders = await _readRepository.GetAll()
-            .Include(stock=> stock.Product)
+            .Include(order => order.Product)
             .ToListAsync(cancellationToken);
         
         if (!orders.Any())
@@ -51,7 +51,11 @@ public sealed class OrderController : ControllerBase
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> GetStockByProductIdAsync([FromRoute] int id, CancellationToken cancellationToken)
     {
-        var order = await _readRepository.GetByIdAsync(id, cancellationToken);
+        var order = await _readRepository.GetAll()
+            .Include(order => order.Product)
+            .Where(order => order.Id == id)
+            .FirstOrDefaultAsync(cancellationToken);
+
         if (order is null)
             return NotFound();
 

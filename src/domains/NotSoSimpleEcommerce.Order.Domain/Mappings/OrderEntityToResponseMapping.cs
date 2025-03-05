@@ -20,6 +20,8 @@ namespace NotSoSimpleEcommerce.Order.Domain.Mappings
         
         public static ProductResponse MapToResponse(this ProductEntity product)
         {
+            if (product is null)
+                return null;
             return new ProductResponse(product.Id, product.Name, product.Price);
         }
         

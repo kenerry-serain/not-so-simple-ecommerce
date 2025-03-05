@@ -23,11 +23,27 @@ public sealed class ProductStockProcessor: IMessageProcessor
 
     public async Task ProcessMessageAsync(AwsQueueMessageParams awsQueueMessage, CancellationToken cancellationToken)
     {
-        var orderCreatedEvent = JsonConvert.DeserializeObject<OrderConfirmedEvent>(awsQueueMessage.Body);
-        if (orderCreatedEvent is null)
-            throw new ArgumentNullException(nameof(orderCreatedEvent));
+        OrderConfirmedEvent? orderConfirmedEvent = null;
 
-        var orderApiResponse = await _orderApiClient.GetOrderByIdAsync(orderCreatedEvent.Id);
+        try
+        {
+            // Attempt to deserialize the SNS envelope.
+            var snsEnvelope = JsonConvert.DeserializeObject<SnsEnvelope>(awsQueueMessage.Body);
+            
+            if (snsEnvelope != null && !string.IsNullOrWhiteSpace(snsEnvelope.Message))
+                orderConfirmedEvent = JsonConvert.DeserializeObject<OrderConfirmedEvent>(snsEnvelope.Message);
+            else
+                orderConfirmedEvent = JsonConvert.DeserializeObject<OrderConfirmedEvent>(awsQueueMessage.Body);
+        }
+        catch (JsonException)
+        {
+            orderConfirmedEvent = JsonConvert.DeserializeObject<OrderConfirmedEvent>(awsQueueMessage.Body);
+        }
+
+        if (orderConfirmedEvent == null)
+            throw new ArgumentNullException(nameof(orderConfirmedEvent));
+
+        var orderApiResponse = await _orderApiClient.GetOrderByIdAsync(orderConfirmedEvent.Id);
         var orderResponse = orderApiResponse.Content ?? throw new ArgumentNullException();
         if (!orderApiResponse.IsSuccessStatusCode)
             throw new KeyNotFoundException("Sorry, something went wrong while consulting the order.");
@@ -39,7 +55,6 @@ public sealed class ProductStockProcessor: IMessageProcessor
 
         var response = await _mainApiClient.UpdateProductStockAsync(orderResponse.Product.Id, new
         {
-            orderResponse.Product.Id,
             Quantity = stockResponse.Quantity - orderResponse.Quantity
         });
     

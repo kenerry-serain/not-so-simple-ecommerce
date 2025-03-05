@@ -1,6 +1,6 @@
 ﻿namespace NotSoSimpleEcommerce.Shared.Events;
 
-public record OrderConfirmedEvent(int Id)
+public class OrderConfirmedEvent
 {
-    public OrderConfirmedEvent(): this(int.MinValue){}
+    public int Id {get;set;}
 }

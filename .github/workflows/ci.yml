@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-    - kenerry-serain-patch-1
+    - feature/github-actions
 
 jobs:
   frontend:

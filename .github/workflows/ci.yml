@@ -1,0 +1,35 @@
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - kenerry-serain-patch-1
+
+jobs:
+  frontend:
+    name: Teste
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+
+    - name: npm install
+      working-directory: ./src/frontend
+      run: |
+        npm ci
+
+    - name: npm test
+      working-directory: ./src/frontend
+      run: |
+        npm run test --if-present
+
+    - name: npm build
+      working-directory: ./src/frontend
+      run: |
+        npm run build
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: ${{github.sha}}
+        path: ./dist

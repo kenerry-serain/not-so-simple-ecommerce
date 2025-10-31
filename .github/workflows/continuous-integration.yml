@@ -1,0 +1,37 @@
+name: Continuous Integration
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+    - master
+
+jobs:
+  frontend:
+    name: CI
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+
+    - name: NPM Install
+      working-directory: ./src/frontend
+      run: npm ci
+
+    - name: NPM Tests
+      working-directory: ./src/frontend
+      run: npm run test --if-present
+      
+    - name: NPM Build
+      working-directory: ./src/frontend
+      run: npm run build
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: ${{github.sha}}
+        path: ./src/frontend/dist

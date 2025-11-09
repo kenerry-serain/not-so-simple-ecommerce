@@ -1,0 +1,14 @@
+name: Continuous Deployment
+on:
+    workflow_run:
+      workflows: ["Continuous Integration"]
+      types:
+      - completed
+
+jobs:
+  frontend-deployment:
+    name: frontend-deployment
+    runs-on: ubuntu-latest
+    steps:
+    - name: Hello World
+      run: echo "Hello World! (Working Trigger)"

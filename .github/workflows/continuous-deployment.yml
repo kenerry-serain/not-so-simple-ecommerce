@@ -6,9 +6,27 @@ on:
       - completed
 
 jobs:
-  frontend-deployment:
-    name: frontend-deployment
+  staging-deployment:
+    name: staging-deployment
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
-    - name: Hello World
-      run: echo "Hello World! (Working Trigger)"
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v5.1.0
+      with:
+        aws-region: us-east-1
+        role-to-assume: arn:aws:iam::968225077300:role/nsse-github-frontend-role
+
+    - uses: actions/download-artifact@v5
+      with:
+        name: ${{ github.event.workflow_run.head_sha }}
+        path: ./dist
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        run-id: ${{ github.event.workflow_run.id }}
+
+    - name: Deploy to S3
+      run: aws s3 sync ./dist s3://staging.devopsnanuvemweek.com --delete
+
+    - name: Invalidate CloudFront Cache
+      run: aws cloudfront create-invalidation --distribution-id E3AFL453T680TI --paths "/*"

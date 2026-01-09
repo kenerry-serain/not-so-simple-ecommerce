@@ -53,7 +53,7 @@ jobs:
         aws cloudfront update-distribution \
           --id E2THQI2CN2X5K2 \
           --distribution-config "$(jq '.DistributionConfig' new-dist.json)" \
-          --if-match "$(jq '.Etag' -r new-dist.json)"
+          --if-match "$(jq '.ETag' -r new-dist.json)"
 
     - name: Invalidate CloudFront Cache
       run: aws cloudfront create-invalidation --distribution-id E2THQI2CN2X5K2 --paths "/*"

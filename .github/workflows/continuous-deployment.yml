@@ -29,7 +29,7 @@ jobs:
       run: aws s3 sync ./dist s3://staging.devopsnanuvemweek.com --delete
 
     - name: Invalidate CloudFront Cache
-      run: aws cloudfront create-invalidation --distribution-id E2THQI2CN2X5K2 --paths "/*"
+      run: aws cloudfront create-invalidation --distribution-id E1XQJMOTWACY8C --paths "/*"
 
   point-production-to-staging:
     name: point-production-to-staging
@@ -52,8 +52,8 @@ jobs:
 
         aws cloudfront update-distribution \
           --id E2THQI2CN2X5K2 \
-          --distribution-config $(jq '.DistributionConfig' new-dist.json) \
-          --if-match $(jq '.Etag' -r new-dist.json)
+          --distribution-config "$(jq '.DistributionConfig' new-dist.json)" \
+          --if-match "$(jq '.Etag' -r new-dist.json)"
 
     - name: Invalidate CloudFront Cache
       run: aws cloudfront create-invalidation --distribution-id E2THQI2CN2X5K2 --paths "/*"

@@ -29,4 +29,31 @@ jobs:
       run: aws s3 sync ./dist s3://staging.devopsnanuvemweek.com --delete
 
     - name: Invalidate CloudFront Cache
-      run: aws cloudfront create-invalidation --distribution-id E3AFL453T680TI --paths "/*"
+      run: aws cloudfront create-invalidation --distribution-id E2THQI2CN2X5K2 --paths "/*"
+
+  point-production-to-staging:
+    name: point-production-to-staging
+    needs: [staging-deployment]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v5.1.0
+      with:
+        aws-region: us-east-1
+        role-to-assume: arn:aws:iam::968225077300:role/nsse-github-frontend-role
+
+    - name: Shift Production to Staging Bucket
+      run: |
+        aws cloudfront get-distribution-config --id E2THQI2CN2X5K2 > dist.json
+
+        jq '.DistributionConfig.DefaultCacheBehavior.TargetOriginId = "staging.devopsnanuvemweek.com.s3.us-east-1.amazonaws.com"' dist.json > new-dist.json
+
+        aws cloudfront update-distribution \
+          --id E2THQI2CN2X5K2 \
+          --distribution-config $(jq '.DistributionConfig' new-dist.json) \
+          --if-match $(jq '.Etag' -r new-dist.json)
+
+    - name: Invalidate CloudFront Cache
+      run: aws cloudfront create-invalidation --distribution-id E2THQI2CN2X5K2 --paths "/*"

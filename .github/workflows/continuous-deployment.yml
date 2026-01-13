@@ -58,3 +58,32 @@ jobs:
 
     - name: Invalidate CloudFront Cache
       run: aws cloudfront create-invalidation --distribution-id E64GVY5C1BYGC --paths "/*"
+
+
+  fast-rollback:
+    name: fast-rollback
+    needs: [point-production-to-staging]
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      id-token: write
+    steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v5.1.0
+      with:
+        aws-region: us-east-1
+        role-to-assume: arn:aws:iam::968225077300:role/nsse-github-frontend-role
+
+    - name: Shift Staging back to Production Bucket
+      run: |
+        aws cloudfront get-distribution-config --id E64GVY5C1BYGC > dist.json
+
+        jq '.DistributionConfig.DefaultCacheBehavior.TargetOriginId = "devopsnanuvemweek.com.s3.us-east-1.amazonaws.com"' dist.json > new-dist.json
+
+        aws cloudfront update-distribution \
+          --id E64GVY5C1BYGC \
+          --distribution-config "$(jq '.DistributionConfig' new-dist.json)" \
+          --if-match "$(jq '.ETag' -r new-dist.json)"
+
+    - name: Invalidate CloudFront Cache
+      run: aws cloudfront create-invalidation --distribution-id E64GVY5C1BYGC --paths "/*"

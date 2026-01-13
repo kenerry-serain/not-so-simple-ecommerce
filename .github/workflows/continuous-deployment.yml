@@ -91,7 +91,7 @@ jobs:
 
   production-deployment:
     name: production-deployment
-    needs: [point-production-to-staging]
+    needs: [fast-rollback, point-production-to-staging]
     runs-on: ubuntu-latest
     environment: production
     permissions:

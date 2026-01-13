@@ -35,7 +35,6 @@ jobs:
     name: point-production-to-staging
     needs: [staging-deployment]
     runs-on: ubuntu-latest
-    environment: production
     permissions:
       id-token: write
     steps:

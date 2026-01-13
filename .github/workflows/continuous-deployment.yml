@@ -47,12 +47,12 @@ jobs:
 
     - name: Shift Production to Staging Bucket
       run: |
-        aws cloudfront get-distribution-config --id E2THQI2CN2X5K2 > dist.json
+        aws cloudfront get-distribution-config --id E64GVY5C1BYGC > dist.json
 
         jq '.DistributionConfig.DefaultCacheBehavior.TargetOriginId = "staging.devopsnanuvemweek.com.s3.us-east-1.amazonaws.com"' dist.json > new-dist.json
 
         aws cloudfront update-distribution \
-          --id E2THQI2CN2X5K2 \
+          --id E64GVY5C1BYGC \
           --distribution-config "$(jq '.DistributionConfig' new-dist.json)" \
           --if-match "$(jq '.ETag' -r new-dist.json)"
 

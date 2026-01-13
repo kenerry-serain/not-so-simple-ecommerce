@@ -35,6 +35,7 @@ jobs:
     name: point-production-to-staging
     needs: [staging-deployment]
     runs-on: ubuntu-latest
+    environment: production
     permissions:
       id-token: write
     steps:
@@ -45,7 +46,6 @@ jobs:
         role-to-assume: arn:aws:iam::968225077300:role/nsse-github-frontend-role
 
     - name: Shift Production to Staging Bucket
-      env: production
       run: |
         aws cloudfront get-distribution-config --id E2THQI2CN2X5K2 > dist.json
 

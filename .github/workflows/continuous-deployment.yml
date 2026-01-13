@@ -9,14 +9,15 @@ jobs:
   staging-deployment:
     name: staging-deployment
     runs-on: ubuntu-latest
+    environment: staging
     permissions:
       id-token: write
     steps:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v5.1.0
       with:
-        aws-region: us-east-1
-        role-to-assume: arn:aws:iam::968225077300:role/nsse-github-frontend-role
+        aws-region: ${{vars.AWS_REGION}}
+        role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
 
     - uses: actions/download-artifact@v5
       with:
@@ -26,10 +27,10 @@ jobs:
         run-id: ${{ github.event.workflow_run.id }}
 
     - name: Deploy to S3
-      run: aws s3 sync ./dist s3://staging.devopsnanuvemweek.com --delete
+      run: aws s3 sync ./dist s3://${{vars.S3_BUCKET_NAME}} --delete
 
     - name: Invalidate CloudFront Cache
-      run: aws cloudfront create-invalidation --distribution-id E33HQF0B2XJLCM --paths "/*"
+      run: aws cloudfront create-invalidation --distribution-id ${{vars.AWS_CLOUDFRONT_DISTRIBUTION_ID}} --paths "/*"
 
   point-production-to-staging:
     name: point-production-to-staging
@@ -42,22 +43,22 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v5.1.0
       with:
-        aws-region: us-east-1
-        role-to-assume: arn:aws:iam::968225077300:role/nsse-github-frontend-role
+        aws-region: ${{vars.AWS_REGION}}
+        role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
 
     - name: Shift Production to Staging Bucket
       run: |
-        aws cloudfront get-distribution-config --id E64GVY5C1BYGC > dist.json
+        aws cloudfront get-distribution-config --id ${{vars.AWS_PROD_CLOUDFRONT_DISTRIBUTION_ID}} > dist.json
 
-        jq '.DistributionConfig.DefaultCacheBehavior.TargetOriginId = "staging.devopsnanuvemweek.com.s3.us-east-1.amazonaws.com"' dist.json > new-dist.json
+        jq '.DistributionConfig.DefaultCacheBehavior.TargetOriginId = "${{vars.AWS_STAGING_BUCKET}}"' dist.json > new-dist.json
 
         aws cloudfront update-distribution \
-          --id E64GVY5C1BYGC \
+          --id ${{vars.AWS_PROD_CLOUDFRONT_DISTRIBUTION_ID}} \
           --distribution-config "$(jq '.DistributionConfig' new-dist.json)" \
           --if-match "$(jq '.ETag' -r new-dist.json)"
 
     - name: Invalidate CloudFront Cache
-      run: aws cloudfront create-invalidation --distribution-id E64GVY5C1BYGC --paths "/*"
+      run: aws cloudfront create-invalidation --distribution-id ${{vars.AWS_PROD_CLOUDFRONT_DISTRIBUTION_ID}} --paths "/*"
 
 
   fast-rollback:
@@ -71,22 +72,22 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v5.1.0
       with:
-        aws-region: us-east-1
-        role-to-assume: arn:aws:iam::968225077300:role/nsse-github-frontend-role
+        aws-region: ${{vars.AWS_REGION}}
+        role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
 
     - name: Shift Staging back to Production Bucket
       run: |
-        aws cloudfront get-distribution-config --id E64GVY5C1BYGC > dist.json
+        aws cloudfront get-distribution-config --id ${{vars.AWS_PROD_CLOUDFRONT_DISTRIBUTION_ID}} > dist.json
 
-        jq '.DistributionConfig.DefaultCacheBehavior.TargetOriginId = "devopsnanuvemweek.com.s3.us-east-1.amazonaws.com"' dist.json > new-dist.json
+        jq '.DistributionConfig.DefaultCacheBehavior.TargetOriginId = "${{vars.AWS_PROD_BUCKET}}"' dist.json > new-dist.json
 
         aws cloudfront update-distribution \
-          --id E64GVY5C1BYGC \
+          --id ${{vars.AWS_PROD_CLOUDFRONT_DISTRIBUTION_ID}} \
           --distribution-config "$(jq '.DistributionConfig' new-dist.json)" \
           --if-match "$(jq '.ETag' -r new-dist.json)"
 
     - name: Invalidate CloudFront Cache
-      run: aws cloudfront create-invalidation --distribution-id E64GVY5C1BYGC --paths "/*"
+      run: aws cloudfront create-invalidation --distribution-id ${{vars.AWS_PROD_CLOUDFRONT_DISTRIBUTION_ID}} --paths "/*"
 
 
   production-deployment:
@@ -100,12 +101,12 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v5.1.0
       with:
-        aws-region: us-east-1
-        role-to-assume: arn:aws:iam::968225077300:role/nsse-github-frontend-role
+        aws-region: ${{vars.AWS_REGION}}
+        role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
 
     - name: Deploy to Production S3
       run: |
-        aws s3 sync s3://staging.devopsnanuvemweek.com s3://devopsnanuvemweek.com --delete
+        aws s3 sync s3://${{vars.AWS_STAGING_BUCKET_NAME}} s3://${{vars.AWS_PROD_BUCKET_NAME}} --delete
         
     - name: Invalidate CloudFront Cache
-      run: aws cloudfront create-invalidation --distribution-id E64GVY5C1BYGC --paths "/*"
+      run: aws cloudfront create-invalidation --distribution-id ${{vars.AWS_PROD_CLOUDFRONT_DISTRIBUTION_ID}} --paths "/*"

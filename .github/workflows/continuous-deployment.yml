@@ -87,3 +87,25 @@ jobs:
 
     - name: Invalidate CloudFront Cache
       run: aws cloudfront create-invalidation --distribution-id E64GVY5C1BYGC --paths "/*"
+
+
+  production-deployment:
+    name: production-deployment
+    needs: [point-production-to-staging]
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      id-token: write
+    steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v5.1.0
+      with:
+        aws-region: us-east-1
+        role-to-assume: arn:aws:iam::968225077300:role/nsse-github-frontend-role
+
+    - name: Deploy to Production S3
+      run: |
+        aws s3 sync s3://staging.devopsnanuvemweek.com s3://devopsnanuvemweek.com --delete
+        
+    - name: Invalidate CloudFront Cache
+      run: aws cloudfront create-invalidation --distribution-id E64GVY5C1BYGC --paths "/*"

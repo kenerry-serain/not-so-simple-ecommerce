@@ -1,0 +1,158 @@
+name: Continuous Integration BackEnd
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'src/services/**'
+      - 'src/workers/**'
+      - 'src/domains/**'
+      - 'src/infrastructure/**'
+      - 'NotSoSimpleEcommerce.sln'
+  push:
+    paths:
+      - 'src/services/**'
+      - 'src/workers/**'
+      - 'src/domains/**'
+      - 'src/infrastructure/**'
+      - 'NotSoSimpleEcommerce.sln'
+
+env:
+  DOTNET_VERSION: '6.0.x'
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore
+        run: dotnet restore NotSoSimpleEcommerce.sln
+
+      - name: Build
+        run: dotnet build NotSoSimpleEcommerce.sln --no-restore -c Release
+
+      - name: Test
+        run: dotnet test NotSoSimpleEcommerce.sln --no-build -c Release --verbosity normal
+
+  detect-changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      shared: ${{ steps.changes.outputs.shared }}
+      main: ${{ steps.changes.outputs.main }}
+      order: ${{ steps.changes.outputs.order }}
+      identity-server: ${{ steps.changes.outputs.identity-server }}
+      health-checker: ${{ steps.changes.outputs.health-checker }}
+      notificator: ${{ steps.changes.outputs.notificator }}
+      invoice-generator: ${{ steps.changes.outputs.invoice-generator }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed paths
+        id: changes
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE=${{ github.event.pull_request.base.sha }}
+          elif [ "${{ github.event_name }}" = "push" ]; then
+            BASE=${{ github.event.before }}
+          else
+            echo "shared=true" >> "$GITHUB_OUTPUT"
+            echo "main=true" >> "$GITHUB_OUTPUT"
+            echo "order=true" >> "$GITHUB_OUTPUT"
+            echo "identity-server=true" >> "$GITHUB_OUTPUT"
+            echo "health-checker=true" >> "$GITHUB_OUTPUT"
+            echo "notificator=true" >> "$GITHUB_OUTPUT"
+            echo "invoice-generator=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          CHANGED=$(git diff --name-only "$BASE" HEAD)
+
+          check() {
+            echo "$CHANGED" | grep -q "^$1" && echo "true" || echo "false"
+          }
+
+          SHARED=$(echo "$CHANGED" | grep -qE '^(src/domains/|src/infrastructure/|NotSoSimpleEcommerce\.sln)' && echo "true" || echo "false")
+          echo "shared=$SHARED" >> "$GITHUB_OUTPUT"
+
+          echo "main=$(check 'src/services/NotSoSimpleEcommerce.Main/')" >> "$GITHUB_OUTPUT"
+          echo "order=$(check 'src/services/NotSoSimpleEcommerce.Order/')" >> "$GITHUB_OUTPUT"
+          echo "identity-server=$(check 'src/services/NotSoSimpleEcommerce.IdentityServer/')" >> "$GITHUB_OUTPUT"
+          echo "health-checker=$(check 'src/services/NotSoSimpleEcommerce.HealthChecker/')" >> "$GITHUB_OUTPUT"
+          echo "notificator=$(check 'src/workers/NotSoSimpleEcommerce.Notificator/')" >> "$GITHUB_OUTPUT"
+          echo "invoice-generator=$(check 'src/workers/NotSoSimpleEcommerce.InvoiceGenerator/')" >> "$GITHUB_OUTPUT"
+
+  main:
+    name: Main Service
+    needs: [build-and-test, detect-changes]
+    if: needs.detect-changes.outputs.shared == 'true' || needs.detect-changes.outputs.main == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Docker Build
+        run: docker build -f src/services/NotSoSimpleEcommerce.Main/Dockerfile .
+
+  order:
+    name: Order Service
+    needs: [build-and-test, detect-changes]
+    if: needs.detect-changes.outputs.shared == 'true' || needs.detect-changes.outputs.order == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Docker Build
+        run: docker build -f src/services/NotSoSimpleEcommerce.Order/Dockerfile .
+
+  identity-server:
+    name: Identity Server
+    needs: [build-and-test, detect-changes]
+    if: needs.detect-changes.outputs.shared == 'true' || needs.detect-changes.outputs.identity-server == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Docker Build
+        run: docker build -f src/services/NotSoSimpleEcommerce.IdentityServer/Dockerfile .
+
+  health-checker:
+    name: Health Checker
+    needs: [build-and-test, detect-changes]
+    if: needs.detect-changes.outputs.shared == 'true' || needs.detect-changes.outputs.health-checker == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Docker Build
+        run: docker build -f src/services/NotSoSimpleEcommerce.HealthChecker/Dockerfile .
+
+  notificator:
+    name: Notificator Worker
+    needs: [build-and-test, detect-changes]
+    if: needs.detect-changes.outputs.shared == 'true' || needs.detect-changes.outputs.notificator == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Docker Build
+        run: docker build -f src/workers/NotSoSimpleEcommerce.Notificator/Dockerfile .
+
+  invoice-generator:
+    name: Invoice Generator Worker
+    needs: [build-and-test, detect-changes]
+    if: needs.detect-changes.outputs.shared == 'true' || needs.detect-changes.outputs.invoice-generator == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Docker Build
+        run: docker build -f src/workers/NotSoSimpleEcommerce.InvoiceGenerator/Dockerfile .

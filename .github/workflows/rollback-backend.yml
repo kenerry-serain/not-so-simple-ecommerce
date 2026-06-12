@@ -1,0 +1,112 @@
+name: Rollback BackEnd
+
+on:
+  workflow_dispatch:
+    inputs:
+      service:
+        description: 'Microservice to rollback'
+        required: true
+        type: choice
+        options:
+          - main
+          - order
+          - identity-server
+          - health-checker
+          - notificator
+          - invoice-generator
+      tag:
+        description: 'Image tag to roll back to (ex: a1b2c3d). Leave empty to pick the previous tag from gitops history.'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+env:
+  ECR_REGISTRY: 968225077300.dkr.ecr.us-east-1.amazonaws.com
+  IMAGE_REPO_PREFIX: nsse/production
+  GITOPS_REPO: kenerry-serain/not-so-simple-ecommerce-gitops
+  GITOPS_KUSTOMIZE_DIR: production
+
+jobs:
+  rollback:
+    name: Rollback ${{ inputs.service }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ env.GITOPS_REPO }}
+          token: ${{ secrets.GITOPS_PAT }}
+          ref: main
+          fetch-depth: 0
+
+      - uses: imranismail/setup-kustomize@v2
+
+      - name: Resolve target tag
+        id: target
+        working-directory: ${{ env.GITOPS_KUSTOMIZE_DIR }}
+        env:
+          SERVICE: ${{ inputs.service }}
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          IMAGE_LINE="${{ env.ECR_REGISTRY }}/${{ env.IMAGE_REPO_PREFIX }}/${SERVICE}"
+
+          if [ -n "$INPUT_TAG" ]; then
+            echo "tag=$INPUT_TAG" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          CURRENT=$(grep -A2 "name: ${IMAGE_LINE}$" kustomization.yml | grep "newTag:" | head -1 | awk '{print $2}')
+          echo "Current tag on gitops: ${CURRENT:-<none>}"
+
+          PREV=$(git log --all -p -- kustomization.yml \
+            | grep -E "^\+\s+newTag:" \
+            | awk '{print $2}' \
+            | grep -v "^${CURRENT}$" \
+            | head -1)
+
+          if [ -z "$PREV" ]; then
+            echo "Could not infer a previous tag from gitops history. Pass the 'tag' input explicitly." >&2
+            exit 1
+          fi
+
+          echo "Previous tag (auto): $PREV"
+          echo "tag=$PREV" >> "$GITHUB_OUTPUT"
+
+      - name: Bump image tag back
+        working-directory: ${{ env.GITOPS_KUSTOMIZE_DIR }}
+        env:
+          SERVICE: ${{ inputs.service }}
+          TAG: ${{ steps.target.outputs.tag }}
+        run: |
+          kustomize edit set image \
+            ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_REPO_PREFIX }}/${SERVICE}=*:${TAG}
+
+      - name: Commit & push
+        env:
+          SERVICE: ${{ inputs.service }}
+          TAG: ${{ steps.target.outputs.tag }}
+        run: |
+          git config user.email "ci-bot@nsse.dev"
+          git config user.name "ci-bot"
+          git add ${{ env.GITOPS_KUSTOMIZE_DIR }}/kustomization.yml
+          if git diff --staged --quiet; then
+            echo "Already on tag ${TAG}; nothing to do."
+            exit 0
+          fi
+          git commit -m "ci(rollback): ${SERVICE} -> ${TAG}"
+          git push
+
+      - name: Summary
+        env:
+          SERVICE: ${{ inputs.service }}
+          TAG: ${{ steps.target.outputs.tag }}
+        run: |
+          {
+            echo "### Rollback aplicado"
+            echo ""
+            echo "**Service:** \`${SERVICE}\`"
+            echo "**Tag alvo:** \`${TAG}\`"
+            echo ""
+            echo "ArgoCD vai sincronizar; o Rollout sobe um novo ReplicaSet com a tag anterior e auto-promove via prePromotionAnalysis."
+          } >> "$GITHUB_STEP_SUMMARY"

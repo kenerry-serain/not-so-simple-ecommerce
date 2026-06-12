@@ -74,6 +74,7 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.shared == 'true' || needs.detect-changes.outputs.main == 'true'
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: actions/checkout@v4
         with:
@@ -100,6 +101,7 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.shared == 'true' || needs.detect-changes.outputs.order == 'true'
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: actions/checkout@v4
         with:
@@ -126,6 +128,7 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.shared == 'true' || needs.detect-changes.outputs.identity-server == 'true'
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: actions/checkout@v4
         with:
@@ -152,6 +155,7 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.shared == 'true' || needs.detect-changes.outputs.health-checker == 'true'
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: actions/checkout@v4
         with:
@@ -178,6 +182,7 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.shared == 'true' || needs.detect-changes.outputs.notificator == 'true'
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: actions/checkout@v4
         with:
@@ -204,6 +209,7 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.shared == 'true' || needs.detect-changes.outputs.invoice-generator == 'true'
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: actions/checkout@v4
         with:
@@ -234,6 +240,7 @@ jobs:
       !contains(needs.*.result, 'failure') &&
       !contains(needs.*.result, 'cancelled')
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: actions/checkout@v4
         with:

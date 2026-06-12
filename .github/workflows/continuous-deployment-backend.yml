@@ -6,6 +6,20 @@ on:
     types: [completed]
     branches: [master]
   workflow_dispatch:
+    inputs:
+      service:
+        description: 'Which microservice to deploy'
+        required: true
+        type: choice
+        default: all
+        options:
+          - all
+          - main
+          - order
+          - identity-server
+          - health-checker
+          - notificator
+          - invoice-generator
 
 permissions:
   id-token: write
@@ -46,13 +60,24 @@ jobs:
 
       - name: Detect changed paths
         id: changes
+        env:
+          DISPATCH_SVC: ${{ inputs.service }}
         run: |
+          # workflow_dispatch: usa a escolha do usuário (all = liga todos)
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            BASE=$(git rev-parse HEAD~1)
-          else
-            BASE="${{ github.event.workflow_run.head_sha }}~1"
+            for svc in shared main order identity-server health-checker notificator invoice-generator; do
+              if [ "$DISPATCH_SVC" = "all" ] || [ "$DISPATCH_SVC" = "$svc" ]; then
+                echo "${svc}=true" >> "$GITHUB_OUTPUT"
+              else
+                echo "${svc}=false" >> "$GITHUB_OUTPUT"
+              fi
+            done
+            exit 0
           fi
-          HEAD="${{ github.event.workflow_run.head_sha || github.sha }}"
+
+          # workflow_run: git diff entre o SHA do CI e o pai
+          BASE="${{ github.event.workflow_run.head_sha }}~1"
+          HEAD="${{ github.event.workflow_run.head_sha }}"
           CHANGED=$(git diff --name-only "$BASE" "$HEAD" || git diff --name-only HEAD~1 HEAD)
 
           check() {

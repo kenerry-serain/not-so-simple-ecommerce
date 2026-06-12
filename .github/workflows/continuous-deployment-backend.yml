@@ -292,12 +292,12 @@ jobs:
               ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_REPO_PREFIX }}/$1=*:${TAG}
           }
 
-          [ "$SHARED" = "true" ] || [ "$MAIN" = "true" ]    && bump main
-          [ "$SHARED" = "true" ] || [ "$ORDER" = "true" ]   && bump order
-          [ "$SHARED" = "true" ] || [ "$IDENTITY" = "true" ] && bump identity-server
-          [ "$SHARED" = "true" ] || [ "$HEALTH" = "true" ]  && bump health-checker
-          [ "$SHARED" = "true" ] || [ "$NOTIF" = "true" ]   && bump notificator
-          [ "$SHARED" = "true" ] || [ "$INVOICE" = "true" ] && bump invoice-generator
+          if [ "$SHARED" = "true" ] || [ "$MAIN" = "true" ];     then bump main; fi
+          if [ "$SHARED" = "true" ] || [ "$ORDER" = "true" ];    then bump order; fi
+          if [ "$SHARED" = "true" ] || [ "$IDENTITY" = "true" ]; then bump identity-server; fi
+          if [ "$SHARED" = "true" ] || [ "$HEALTH" = "true" ];   then bump health-checker; fi
+          if [ "$SHARED" = "true" ] || [ "$NOTIF" = "true" ];    then bump notificator; fi
+          if [ "$SHARED" = "true" ] || [ "$INVOICE" = "true" ];  then bump invoice-generator; fi
 
       - name: Commit & push
         env:

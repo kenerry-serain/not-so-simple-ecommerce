@@ -14,6 +14,10 @@ on:
           - health-checker
           - notificator
           - invoice-generator
+      commit:
+        description: 'Optional gitops commit SHA to roll back to. If empty, scans the last 5 commits of kustomization.yml for the previous distinct tag.'
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -39,35 +43,51 @@ jobs:
 
       - uses: imranismail/setup-kustomize@v2
 
-      - name: Resolve previous tag from kustomization history
+      - name: Resolve previous tag
         id: target
         working-directory: ${{ env.GITOPS_KUSTOMIZE_DIR }}
         env:
           SERVICE: ${{ inputs.service }}
+          INPUT_COMMIT: ${{ inputs.commit }}
         run: |
           IMAGE_NAME="${{ env.ECR_REGISTRY }}/${{ env.IMAGE_REPO_PREFIX }}/${SERVICE}"
 
-          CURRENT=$(awk -v img="$IMAGE_NAME" '
-            $0 ~ "name: "img"$" { found=1; next }
-            found && /newTag:/ { print $2; exit }
-          ' kustomization.yml)
-          echo "Current tag on gitops: ${CURRENT:-<none>}"
+          tag_at() {
+            git show "$1":production/kustomization.yml 2>/dev/null \
+              | awk -v img="$IMAGE_NAME" '
+                  $0 ~ "name: "img"$" { found=1; next }
+                  found && /newTag:/ { print $2; exit }
+                '
+          }
 
-          PREV=$(git log -p -- kustomization.yml \
-            | awk -v img="$IMAGE_NAME" '
-                $0 ~ "name: "img"$" { found=1; next }
-                found && /^\+.*newTag:/ { sub(/^\+ */,""); print $2; exit }
-              ' \
-            | grep -vx "${CURRENT}" \
-            | head -1)
-
-          if [ -z "$PREV" ]; then
-            echo "No previous tag found in kustomization history for ${SERVICE}." >&2
-            exit 1
+          # 1) If a specific commit was provided, take its tag verbatim.
+          if [ -n "$INPUT_COMMIT" ]; then
+            TAG=$(tag_at "$INPUT_COMMIT")
+            if [ -z "$TAG" ]; then
+              echo "Could not read tag for ${SERVICE} at commit ${INPUT_COMMIT}." >&2
+              exit 1
+            fi
+            echo "Target tag from commit ${INPUT_COMMIT}: $TAG"
+            echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
 
-          echo "Previous tag: $PREV"
-          echo "tag=$PREV" >> "$GITHUB_OUTPUT"
+          # 2) Otherwise, look at the last 5 commits of kustomization.yml and pick
+          #    the most recent one whose tag differs from the current one.
+          CURRENT=$(tag_at HEAD)
+          echo "Current tag: ${CURRENT:-<none>}"
+
+          for sha in $(git log -n 5 --format=%H -- kustomization.yml); do
+            CANDIDATE=$(tag_at "$sha")
+            if [ -n "$CANDIDATE" ] && [ "$CANDIDATE" != "$CURRENT" ]; then
+              echo "Previous tag (from $sha): $CANDIDATE"
+              echo "tag=$CANDIDATE" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          done
+
+          echo "No previous distinct tag found in the last 5 commits of kustomization.yml for ${SERVICE}." >&2
+          exit 1
 
       - name: Set image back to previous tag
         working-directory: ${{ env.GITOPS_KUSTOMIZE_DIR }}
